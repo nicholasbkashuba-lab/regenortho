@@ -1239,8 +1239,6 @@ FIGURE_NODES = [
      "Tennis elbow & stubborn tendinopathy — shockwave, PRP & guided loading.", "r"),
     ("wrist", CX - WRIST_DX, WRIST_Y + 4, "Wrist", "services/orthopedic-sports-medicine.html",
      "Hand & wrist sprains, fractures & overuse — precise orthopedic evaluation.", "l"),
-    ("spine", CX, RIB_BOT + 34, "Spine", "services/regenerative-medicine-orthobiologics.html",
-     "PRP, cellular & peptide therapies that help the body repair itself.", "l"),
     ("hip", CX + HIP_DX, HIP_Y, "Hip", "conditions/hip-pain.html",
      "Precise diagnosis for arthritis, bursitis & tendon problems.", "r"),
     ("knee", CX - KNEE_DX, KNEE_Y + 10, "Knee", "conditions/knee-pain.html",
@@ -1273,6 +1271,10 @@ def figure_svg(depth=0):
       <circle class="bm-hit" cx="{x}" cy="{y}" r="34"/>
     </a>""")
     nodes_html = "\n".join(nodes)
+    # Generate the bones FIRST: each one registers its own light-source gradient,
+    # and figure_defs() only knows about them once that has happened.
+    bones_html = skeleton_svg()
+    defs_html = figure_defs()
     return f"""<div class="figure-stage" aria-label="Interactive map of the body — choose an area to explore care options">
   <div class="figure-glow" aria-hidden="true"></div>
   <div class="figure-orbit" aria-hidden="true"></div>
@@ -1280,11 +1282,11 @@ def figure_svg(depth=0):
   <div class="figure-scan" aria-hidden="true"></div>
   <svg class="figure-svg" viewBox="0 0 {VB_W} {VB_H}" role="group" aria-label="Areas we treat">
     <defs>
-      {figure_defs()}
+      {defs_html}
     </defs>
     <ellipse cx="{CX}" cy="{VB_H // 2}" rx="{VB_W // 2 - 12}" ry="{VB_H // 2 - 20}" fill="url(#figGlow)"/>
     <g class="fig-bones">
-      {skeleton_svg()}
+      {bones_html}
     </g>
     {nodes_html}
   </svg>
