@@ -419,117 +419,6 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
 .h-rise { opacity: 0; animation: hRise .95s var(--ease) forwards; animation-delay: var(--hd, 0s); }
 @keyframes hRise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
 
-/* ------------------------------ the figure ------------------------------- */
-
-.section-anatomy { overflow: hidden; }
-.anatomy-inner { position: relative; max-width: var(--wrap); margin: 0 auto;
-  display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: 3rem; align-items: center; }
-.anatomy-copy h2 { margin: .8rem 0 1rem; }
-.anatomy-lede { color: #A9BCCE; }
-.anatomy-list { margin-top: 1.4rem; }
-.anatomy-list li { color: #C4D2E0; font-size: .92rem; }
-.anatomy-cta { display: flex; gap: .8rem; flex-wrap: wrap; margin-top: 1.8rem; }
-
-.anatomy-stage { position: relative; padding-top: 1.4rem; }
-.figure-stage { position: relative; max-width: 500px; margin: 0 auto; }
-.figure-svg { width: 100%; height: auto; position: relative; z-index: 2; overflow: visible; }
-.figure-glow { position: absolute; inset: -4% 2%; border-radius: 50%; z-index: 0;
-  background: radial-gradient(circle at 50% 42%, rgba(253, 201, 41, .1) 0%, rgba(18, 69, 127, .22) 45%, transparent 72%);
-  filter: blur(30px); }
-.figure-orbit { position: absolute; inset: 3% 5% 9% 5%; border-radius: 50%; z-index: 1;
-  border: 1px dashed rgba(253, 201, 41, .26); animation: orbitSpin 46s linear infinite; }
-.figure-orbit::before { content: ""; position: absolute; top: 6%; left: 13%; width: 8px; height: 8px; border-radius: 50%;
-  background: var(--gold); box-shadow: 0 0 14px 3px rgba(253, 201, 41, .5); }
-.figure-orbit-2 { inset: -1% 0 4% 0; border-color: rgba(94, 139, 192, .22); animation: orbitSpin 70s linear infinite reverse; }
-.figure-orbit-2::before { top: auto; bottom: 8%; left: auto; right: 11%; width: 5px; height: 5px; background: #5E8BC0; box-shadow: 0 0 10px 2px rgba(94, 139, 192, .5); }
-@keyframes orbitSpin { to { transform: rotate(360deg); } }
-
-.figure-scan { position: absolute; left: 14%; right: 14%; top: 0; height: 2px; z-index: 3; pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(253, 201, 41, .7), transparent);
-  filter: drop-shadow(0 0 6px rgba(253, 201, 41, .8));
-  animation: scan 10s ease-in-out infinite; opacity: 0; transition: opacity 1s var(--ease) 1.6s; }
-.figure-stage.is-live .figure-scan { opacity: 0; }
-@keyframes scan { 0%, 100% { transform: translateY(60px); } 50% { transform: translateY(690px); } }
-
-/* The figure is light, not anatomy. A skeleton reads clinical beside an IV
-   lounge; this is the same interactive navigation rendered as a wellness form. */
-.au-halo { fill: url(#auHalo); }
-.fig-aura { filter: url(#auBloom); }
-.au-mass {
-  fill: url(#auBody); filter: url(#auSoft);
-  opacity: 0; transform: scale(.97); transform-origin: center; transform-box: fill-box;
-}
-.figure-stage.is-live .au-mass { animation: auRise 1.6s var(--ease) forwards; }
-.figure-stage.is-live .au-mass:nth-child(2) { animation-delay: .1s; }
-.figure-stage.is-live .au-mass:nth-child(3), .figure-stage.is-live .au-mass:nth-child(4) { animation-delay: .22s; }
-.figure-stage.is-live .au-mass:nth-child(5), .figure-stage.is-live .au-mass:nth-child(6) { animation-delay: .34s; }
-@keyframes auRise { to { opacity: 1; transform: none; } }
-/* a slow breath, so the form is never completely still */
-.figure-stage.is-live .fig-aura { animation: auBreathe 7s ease-in-out infinite 1.6s; transform-origin: 50% 55%; }
-@keyframes auBreathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.014); } }
-
-.au-thread {
-  fill: none; stroke: rgba(253, 201, 41, .55); stroke-width: 1.1;
-  stroke-dasharray: 5 13; stroke-linecap: round; opacity: 0;
-}
-.figure-stage.is-live .au-thread {
-  animation: auThread 1.2s var(--ease) forwards var(--td, 0s), auFlow 5s linear infinite var(--td, 0s);
-}
-@keyframes auThread { to { opacity: .8; } }
-@keyframes auFlow { to { stroke-dashoffset: -36; } }
-
-.au-mote { fill: var(--gold); opacity: 0; }
-.figure-stage.is-live .au-mote { animation: auDrift 9s ease-in-out infinite var(--md, 0s); }
-@keyframes auDrift {
-  0%, 100% { opacity: 0; transform: translateY(6px); }
-  50% { opacity: .5; transform: translateY(-10px); }
-}
-
-/* interactive nodes */
-.bm-node { cursor: pointer; text-decoration: none; opacity: 0; transition: opacity .8s var(--ease) 1.5s; }
-.figure-stage.is-live .bm-node { opacity: 1; }
-.bm-node .bm-dot { fill: #FFFFFF; filter: drop-shadow(0 0 5px rgba(168, 214, 255, .95)); transition: r .25s var(--ease); }
-.bm-node .bm-ring { fill: none; stroke: rgba(168, 214, 255, .9); stroke-width: 1.5; }
-.bm-node .bm-halo { fill: rgba(140, 195, 250, .16); transform-origin: center; transform-box: fill-box; animation: haloPulse 2.7s ease-in-out infinite; }
-.bm-node:nth-of-type(2n) .bm-halo { animation-delay: 1.2s; }
-.bm-node:nth-of-type(3n) .bm-halo { animation-delay: .6s; }
-.bm-node:nth-of-type(5n) .bm-halo { animation-delay: 1.8s; }
-@keyframes haloPulse { 0%, 100% { transform: scale(1); opacity: .55; } 50% { transform: scale(1.5); opacity: .12; } }
-
-.bm-leader { stroke: var(--gold); stroke-width: 1; opacity: 0; transition: opacity .3s var(--ease); }
-.bm-leader-tip { fill: var(--gold); opacity: 0; transition: opacity .3s var(--ease); }
-.bm-label { font: 700 15px/1 var(--sans); letter-spacing: .05em; fill: #EAF1F8; opacity: 0;
-  transition: opacity .3s var(--ease); paint-order: stroke; stroke: rgba(4, 16, 31, .85); stroke-width: 4px; }
-.bm-node:hover .bm-label, .bm-node:focus .bm-label, .bm-node.is-active .bm-label,
-.bm-node:hover .bm-leader, .bm-node:focus .bm-leader, .bm-node.is-active .bm-leader,
-.bm-node:hover .bm-leader-tip, .bm-node:focus .bm-leader-tip, .bm-node.is-active .bm-leader-tip { opacity: 1; }
-.bm-node:hover .bm-dot, .bm-node:focus .bm-dot, .bm-node.is-active .bm-dot { r: 6.5; }
-.bm-node:hover .bm-ring, .bm-node.is-active .bm-ring, .bm-node:focus .bm-ring { stroke: #FFFFFF; stroke-width: 2; filter: drop-shadow(0 0 8px rgba(190, 225, 255, .95)); }
-.bm-node:hover .bm-dot, .bm-node.is-active .bm-dot { filter: drop-shadow(0 0 9px rgba(210, 235, 255, 1)); }
-.bm-node.is-active .bm-halo { animation-duration: 1.4s; }
-/* invisible finger-sized tap target — r=34 gives ~60px of reach on a phone and
-   still clears the closest pair (veins ↔ nerves, 74.4 apart) */
-.bm-hit { fill: transparent; pointer-events: all; }
-.bm-node:focus { outline: none; }
-.bm-node:focus-visible .bm-ring { stroke: #fff; stroke-width: 2.2; }
-
-.figure-caption { position: relative; z-index: 4; margin: .6rem auto 0; max-width: 400px; min-height: 3.4rem;
-  text-align: center; font-size: .86rem; color: #A9BCCE; display: flex; flex-direction: column; gap: .15rem; }
-.figure-caption-label { color: var(--gold); font-weight: 800; letter-spacing: .04em; }
-
-/* Touch follow-through: on hover-less devices the first tap on a node only
-   reveals its blurb — this button (and a second tap on the node) is the trip
-   to the page. JS unhides it, so it never appears where hover already works. */
-.figure-go { display: inline-flex; align-items: center; gap: .45rem; align-self: center;
-  margin-top: .75rem; padding: .6rem 1.15rem; border-radius: 999px;
-  background: var(--gold); color: var(--navy-900); text-decoration: none;
-  font: 800 .78rem/1 var(--sans); letter-spacing: .08em; text-transform: uppercase;
-  box-shadow: 0 10px 24px -12px rgba(253, 201, 41, .8);
-  animation: goRise .3s var(--ease) both; }
-.figure-go[hidden] { display: none; }
-.figure-go svg { flex: none; }
-@keyframes goRise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-
 /* ------------------------------ the drip shelf --------------------------- */
 /* The IV bags are the practice's own product renders — nobody else has them,
    and a luxury wellness menu is far closer to what this practice is than an
@@ -1191,10 +1080,7 @@ body.nav-locked .mobile-call { display: none !important; }
   .reveal { opacity: 1; transform: none; }
   .h-rise { animation: none; opacity: 1; }
   .hero-scene { animation: none; }
-  .au-mass, .au-thread { opacity: 1; transform: none; animation: none !important; }
-  .au-mote, .fig-aura { animation: none !important; }
   .bm-node { opacity: 1; transition: none; }
-  .figure-scan, .figure-orbit, .scene-birds, .scene-swells, .scene-sparkles, .scene-rollers, .scene-wash { display: none; }
   .marquee-track { animation: none; flex-wrap: wrap; width: auto; }
   .social-track { animation: none; }
   .social-rail { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }

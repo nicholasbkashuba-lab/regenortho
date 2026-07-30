@@ -1213,77 +1213,6 @@ def svc_name(slug):
 # The hero anatomy figure — the moving centerpiece of the homepage
 # ---------------------------------------------------------------------------
 
-from figure import (VB_W, VB_H, CX, SHOULDER_Y, SHOULDER_DX, ELBOW_Y, ELBOW_DX,
-                    WRIST_Y, WRIST_DX, HIP_Y, HIP_DX, KNEE_Y, KNEE_DX, ANKLE_Y, ANKLE_DX,
-                    RIB_BOT)
-from aura import aura_svg, aura_defs
-
-# Joint hotspots. Coordinates come from figure.py's landmarks so a hotspot can
-# never drift off the bone it points at.
-FIGURE_NODES = [
-    # key, x, y, clinical label, href, blurb, label side
-    ("shoulder", CX + SHOULDER_DX, SHOULDER_Y + 6, "Shoulder", "conditions/shoulder-pain.html",
-     "Rotator cuff, arthritis & sports injuries — fellowship-trained shoulder care.", "r"),
-    ("elbow", CX + ELBOW_DX, ELBOW_Y, "Elbow", "conditions/tendon-ligament-injuries.html",
-     "Tennis elbow & stubborn tendinopathy — shockwave, PRP & guided loading.", "r"),
-    ("wrist", CX - WRIST_DX, WRIST_Y + 4, "Wrist", "services/orthopedic-sports-medicine.html",
-     "Hand & wrist sprains, fractures & overuse — precise orthopedic evaluation.", "l"),
-    ("hip", CX + HIP_DX, HIP_Y, "Hip", "conditions/hip-pain.html",
-     "Precise diagnosis for arthritis, bursitis & tendon problems.", "r"),
-    ("knee", CX - KNEE_DX, KNEE_Y + 10, "Knee", "conditions/knee-pain.html",
-     "From PRP to the MISHA shock absorber to Mako robotic replacement.", "l"),
-    ("veins", CX + 30, KNEE_Y + 78, "Veins", "conditions/varicose-spider-veins.html",
-     "Ultrasound-guided ablation & sclerotherapy for healthier legs.", "r"),
-    ("nerves", CX - 30, KNEE_Y + 122, "Nerves", "conditions/peripheral-neuropathy.html",
-     "The Neuropathy Restoration Program — burning & numbness at the root.", "l"),
-    ("ankle", CX + ANKLE_DX, ANKLE_Y + 4, "Ankle & Foot", "conditions/foot-ankle-pain.html",
-     "Board-certified foot & ankle surgery, orthotics & heel pain relief.", "r"),
-]
-
-
-def figure_svg(depth=0):
-    p = "../" * depth
-    label_l, label_r = 96, VB_W - 96
-    nodes = []
-    for key, x, y, label, href, blurb, side in FIGURE_NODES:
-        lx = label_l if side == "l" else label_r
-        nx = x - 15 if side == "l" else x + 15
-        anchor = "end" if side == "l" else "start"
-        tx = lx - 8 if side == "l" else lx + 8
-        nodes.append(f"""<a href="{p}{href}" class="bm-node" data-part="{key}" data-label="{label}" data-blurb="{html.escape(blurb)}" aria-label="{label} — explore care options">
-      <line class="bm-leader" x1="{nx}" y1="{y}" x2="{lx}" y2="{y}"/>
-      <circle class="bm-leader-tip" cx="{lx}" cy="{y}" r="2"/>
-      <circle class="bm-halo" cx="{x}" cy="{y}" r="17"/>
-      <circle class="bm-ring" cx="{x}" cy="{y}" r="11"/>
-      <circle class="bm-dot" cx="{x}" cy="{y}" r="4.2"/>
-      <text class="bm-label" x="{tx}" y="{y + 5}" text-anchor="{anchor}">{label}</text>
-      <circle class="bm-hit" cx="{x}" cy="{y}" r="34"/>
-    </a>""")
-    nodes_html = "\n".join(nodes)
-    # The figure is a luminous form, not an anatomy chart — a skeleton read as
-    # clinical next to an IV lounge and a peptide menu.
-    body_html = aura_svg(FIGURE_NODES)
-    defs_html = aura_defs()
-    return f"""<div class="figure-stage" aria-label="Interactive map of the body — choose an area to explore care options">
-  <div class="figure-glow" aria-hidden="true"></div>
-  <div class="figure-orbit" aria-hidden="true"></div>
-  <div class="figure-orbit figure-orbit-2" aria-hidden="true"></div>
-  <div class="figure-scan" aria-hidden="true"></div>
-  <svg class="figure-svg" viewBox="0 0 {VB_W} {VB_H}" role="group" aria-label="Areas we treat">
-    <defs>
-      {defs_html}
-    </defs>
-    <ellipse class="au-halo" cx="{CX}" cy="{VB_H // 2}" rx="{VB_W // 2 - 8}" ry="{VB_H // 2 - 14}"/>
-    <g class="fig-aura">
-      {body_html}
-    </g>
-    {nodes_html}
-  </svg>
-  <p class="figure-caption" aria-live="polite"><strong class="figure-caption-label">Where does it hurt?</strong><span class="figure-caption-blurb">Hover or tap a point of light to see how we treat it.</span></p>
-  <a class="figure-go" href="{p}{FIGURE_NODES[0][4]}" hidden>Explore <span class="figure-go-label">{FIGURE_NODES[0][3]}</span> <svg viewBox="0 0 16 12" width="14" height="10" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M1 6h13M9 1l5 5-5 5"/></svg></a>
-</div>"""
-
-
 # ---------------------------------------------------------------------------
 # Page builders
 # ---------------------------------------------------------------------------
@@ -1379,18 +1308,6 @@ def build_home():
         for p_ in posts
     )
 
-    drip_cards_html = "".join(f"""<li class="drip-card" data-cat="{v['cat']}" style="--dd:{k * 70}ms; --df:{6.5 + (k % 5) * 1.4}s; --dp:{(k % 7) * 0.8}s">
-      <a href="iv-therapy.html">
-        <span class="drip-bag"><img src="assets/media/{v['bag']}?v={asset_v('assets/media/' + v['bag'])}" alt="{v['short']} IV drip bag" width="150" height="230" loading="lazy"></span>
-        <span class="drip-body">
-          <strong>{v['short']}</strong>
-          <span class="drip-ing">{v['ingredients']}</span>
-          <span class="drip-desc">{v['desc']}</span>
-        </span>
-        <span class="drip-price">${v['price']}</span>
-      </a>
-    </li>""" for k, v in enumerate(IV_MENU))
-
     body = f"""{nav(d)}
 <main id="main">
 <section class="hero" id="hero">
@@ -1447,32 +1364,6 @@ def build_home():
       <span>Orthopedics</span><span>·</span><span>Sports Medicine</span><span>·</span><span>Podiatry</span><span>·</span><span>Regenerative Medicine</span><span>·</span><span>Vein Care</span><span>·</span><span>IV Wellness</span><span>·</span><span>Concierge Care</span><span>·</span>
     </div>
   </div>
-</section>
-
-<section class="section section-dark section-drips" id="drip-menu">
-  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
-  <div class="section-head reveal">
-    <p class="eyebrow">The IV Lounge</p>
-    <h2>Twelve drips, <em>one for the way you feel today</em></h2>
-    <p class="section-sub">Physician-formulated infusions in a private Palm Beach Gardens suite — hydration and recovery through NAD⁺ and cellular performance. Every bag is mixed for you, not pulled off a shelf.</p>
-  </div>
-
-  <div class="drip-filter reveal" role="tablist" aria-label="Filter infusions by goal">
-    <button type="button" class="drip-chip is-active" role="tab" aria-selected="true" data-cat="all">Everything</button>
-    <button type="button" class="drip-chip" role="tab" aria-selected="false" data-cat="recovery">Recovery</button>
-    <button type="button" class="drip-chip" role="tab" aria-selected="false" data-cat="performance">Performance</button>
-    <button type="button" class="drip-chip" role="tab" aria-selected="false" data-cat="beauty">Beauty</button>
-    <button type="button" class="drip-chip" role="tab" aria-selected="false" data-cat="wellness">Wellness</button>
-  </div>
-
-  <ul class="drip-shelf reveal" data-drips>
-    {drip_cards_html}
-  </ul>
-
-  <p class="section-foot reveal">
-    <a class="btn btn-gold" href="contact.html#book">Book an infusion</a>
-    <a class="btn btn-ghost-light" href="iv-therapy.html">See the full IV menu</a>
-  </p>
 </section>
 
 <section class="section section-services" id="services">
@@ -2206,14 +2097,17 @@ def build_iv():
     d = 0
     cards = ""
     for i, item in enumerate(IV_MENU):
-        cards += f"""<article class="iv-card reveal" style="--d:{(i % 3) * 90}ms" id="drip-{i + 1}">
-      <span class="iv-bag"><img src="assets/media/{item['bag']}?v={asset_v('assets/media/' + item['bag'])}" alt="" width="150" height="220" loading="lazy"></span>
-      <div class="iv-card-body">
-        <h3>{item['name']}</h3>
-        <p>{item['desc']}</p>
-      </div>
-      <div class="iv-card-foot"><span class="iv-price">${item['price']}</span><a class="btn btn-sm btn-navy" href="contact.html#book">Book this drip</a></div>
-    </article>"""
+        cards += f"""<li class="drip-card" data-cat="{item['cat']}" id="drip-{i + 1}" style="--dd:{i * 70}ms; --df:{6.5 + (i % 5) * 1.4}s; --dp:{(i % 7) * 0.8}s">
+      <a href="contact.html#book">
+        <span class="drip-bag"><img src="assets/media/{item['bag']}?v={asset_v('assets/media/' + item['bag'])}" alt="{item['short']} IV drip bag" width="150" height="230" loading="lazy"></span>
+        <span class="drip-body">
+          <strong>{item['short']}</strong>
+          <span class="drip-ing">{item['ingredients']}</span>
+          <span class="drip-desc">{item['desc']}</span>
+        </span>
+        <span class="drip-price">${item['price']}</span>
+      </a>
+    </li>"""
     faqs = "".join(
         f"""<details class="faq-item"><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>"""
         for q, a in IV_FAQS
@@ -2231,10 +2125,20 @@ def build_iv():
     body = f"""{nav(d)}
 <main id="main">
 {page_hero("The IV Lounge", "Repair. Rehydrate. Renew.", "Revitalize your body and restore essential nutrients with IV treatments performed by our medical team — in a lounge designed for comfort, not a hospital corridor.", crumbs_html, depth=d)}
-<section class="section">
+<section class="section section-dark section-drips" id="menu">
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
   <div class="section-head reveal"><p class="eyebrow">The Menu</p><h2>Twelve formulas, <em>one goal: you at 100%</em></h2>
   <p class="section-sub">Every infusion starts with a short medical pre-screen and is administered by our clinical team using sterile, pharmaceutical-grade solutions.</p></div>
-  <div class="iv-grid">{cards}</div>
+
+  <div class="drip-filter reveal" role="tablist" aria-label="Filter infusions by goal">
+    <button type="button" class="drip-chip is-active" role="tab" aria-selected="true" data-cat="all">Everything</button>
+    <button type="button" class="drip-chip" role="tab" aria-selected="false" data-cat="recovery">Recovery</button>
+    <button type="button" class="drip-chip" role="tab" aria-selected="false" data-cat="performance">Performance</button>
+    <button type="button" class="drip-chip" role="tab" aria-selected="false" data-cat="beauty">Beauty</button>
+    <button type="button" class="drip-chip" role="tab" aria-selected="false" data-cat="wellness">Wellness</button>
+  </div>
+
+  <ul class="drip-shelf reveal" data-drips>{cards}</ul>
 </section>
 <section class="section section-dark section-iv-how">
   <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
