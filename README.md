@@ -112,6 +112,32 @@ To deploy:
 To hand the whole thing to the practice, transfer this repo to their GitHub account and
 re-import it under their own Vercel account — nothing in the code needs to change.
 
+## Search, AI answers & Bing
+
+Beyond the usual on-page SEO, the build emits three things that are easy to lose
+in a refactor:
+
+- **`robots.txt` names AI crawlers explicitly** (GPTBot, ClaudeBot, PerplexityBot,
+  Google-Extended, OAI-SearchBot, Applebot-Extended, CCBot and others) with
+  `Allow: /`. Several of these treat silence as "no permission", so an unlisted
+  site quietly disappears from AI answers — increasingly where "find me an
+  orthopedist in Palm Beach Gardens" actually gets asked.
+- **`max-snippet:-1, max-image-preview:large`** in the robots meta. Without it
+  Google caps snippet length, and the snippet is what feeds AI Overviews.
+- **`/blog/feed.xml`** (RSS) — how aggregators and several AI crawlers find new posts.
+
+### IndexNow (Bing + Yandex instant indexing)
+
+The key file `a7f3c1e94b2d48f6ae05d7c318b6f240.txt` at the site root proves domain
+ownership. It does nothing on its own — you have to ping when content changes:
+
+```
+curl -s "https://api.indexnow.org/indexnow?url=https://www.regenorthopb.com/&key=a7f3c1e94b2d48f6ae05d7c318b6f240"
+```
+
+Swap `url=` for whichever page changed. Google ignores IndexNow; Bing, Yandex and
+several AI crawlers act on it within minutes instead of waiting for a crawl.
+
 ## SEO — do not regress
 
 - Every page emits a unique title/description, canonical, Open Graph/Twitter tags, and

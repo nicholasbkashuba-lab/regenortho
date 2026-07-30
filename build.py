@@ -8,6 +8,7 @@ own published content — do not invent credentials, statistics, or clinical
 claims.
 """
 
+import datetime
 import hashlib
 import html
 import math
@@ -17,6 +18,11 @@ import re
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 BASE = "https://www.regenorthopb.com"
+SITE_LAUNCHED = "2026-07-30"
+SITE_UPDATED = "2026-07-30"
+# IndexNow key (public by design — it must be served at /{key}.txt to prove
+# ownership). Ping Bing/Yandex on content changes; see README.
+INDEXNOW_KEY = "a7f3c1e94b2d48f6ae05d7c318b6f240"
 
 NAME = "RegenOrtho Palm Beach"
 TAGLINE = "The Regeneration of Orthopedics"
@@ -61,6 +67,19 @@ def head(title, desc, depth=0, canonical="", og_image="assets/media/og-image.jpg
     canonical_url = f"{BASE}/{canonical}" if canonical else f"{BASE}/"
     og_url = f"{BASE}/{og_image}?v={asset_v(og_image)}"
     schema = org_schema()
+    page_graph = json.dumps({
+        "@context": "https://schema.org",
+        "@graph": [
+            {"@type": "WebSite", "@id": f"{BASE}/#website", "url": f"{BASE}/", "name": NAME,
+             "inLanguage": "en-US", "publisher": {"@id": ORG_ID}},
+            {"@type": "WebPage", "@id": f"{canonical_url}#webpage", "url": canonical_url,
+             "name": title, "description": desc, "inLanguage": "en-US",
+             "isPartOf": {"@id": f"{BASE}/#website"},
+             "about": {"@id": ORG_ID},
+             "primaryImageOfPage": {"@type": "ImageObject", "url": og_url},
+             "datePublished": SITE_LAUNCHED, "dateModified": SITE_UPDATED},
+        ],
+    }, separators=(",", ":"))
     hero_preload = ""
     if preload_hero:
         hero_preload = ""  # hero is SVG/CSS — nothing extra to preload
@@ -77,6 +96,7 @@ def head(title, desc, depth=0, canonical="", og_image="assets/media/og-image.jpg
 <link rel="canonical" href="{canonical_url}">
 <meta property="og:type" content="{page_type}">
 <meta property="og:site_name" content="{NAME}">
+<meta property="og:locale" content="en_US">
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(desc)}">
 <meta property="og:url" content="{canonical_url}">
@@ -87,7 +107,20 @@ def head(title, desc, depth=0, canonical="", og_image="assets/media/og-image.jpg
 <meta name="twitter:title" content="{html.escape(title)}">
 <meta name="twitter:description" content="{html.escape(desc)}">
 <meta name="twitter:image" content="{og_url}">
+<meta name="twitter:image:alt" content="{html.escape(title)}">
+<link rel="alternate" type="application/rss+xml" title="{NAME} — Blog" href="{p}blog/feed.xml">
 <meta name="theme-color" content="#071A38">
+<meta name="color-scheme" content="light dark">
+<meta name="format-detection" content="telephone=no">
+<!-- Let Google/Bing use full-length snippets and large image previews. Without
+     this they cap snippet length, which is what feeds AI Overviews and chat answers. -->
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta name="geo.region" content="US-FL">
+<meta name="geo.placename" content="Palm Beach Gardens">
+<meta name="geo.position" content="{GEO_LAT};{GEO_LNG}">
+<meta name="ICBM" content="{GEO_LAT}, {GEO_LNG}">
 <link rel="icon" type="image/png" sizes="32x32" href="{p}assets/media/favicon-32.png?v=1">
 <link rel="icon" type="image/png" sizes="16x16" href="{p}assets/media/favicon-16.png?v=1">
 <link rel="apple-touch-icon" href="{p}assets/media/apple-touch-icon.png?v=1">
@@ -97,6 +130,7 @@ def head(title, desc, depth=0, canonical="", og_image="assets/media/og-image.jpg
 {hero_preload}<link rel="stylesheet" href="{p}assets/css/styles.css?v={asset_v('assets/css/styles.css')}">
 <link rel="stylesheet" href="{p}assets/css/assist.css?v={asset_v('assets/css/assist.css')}">
 {extra_css_tag}<script type="application/ld+json">{schema}</script>
+<script type="application/ld+json">{page_graph}</script>
 {extra_schema}</head>
 """
 
@@ -338,12 +372,25 @@ def org_schema():
             "slogan": TAGLINE,
             "description": "Concierge orthopedic, podiatric, regenerative, and vein care in Palm Beach Gardens, FL — board-certified specialists offering sports medicine, foot & ankle surgery, orthobiologic therapies, IV wellness, and minimally invasive vein treatment.",
             "url": f"{BASE}/",
-            "logo": f"{BASE}/assets/media/logo-dark.png",
+            "logo": {"@type": "ImageObject", "@id": f"{BASE}/#logo",
+                     "url": f"{BASE}/assets/media/logo-dark.png",
+                     "contentUrl": f"{BASE}/assets/media/logo-dark.png",
+                     "caption": NAME},
             "image": f"{BASE}/assets/media/og-image.jpg",
             "telephone": "+1-833-783-6561",
             "email": EMAIL,
             "priceRange": "$$",
             "currenciesAccepted": "USD",
+            "paymentAccepted": "Cash, Credit Card, Insurance, HSA/FSA",
+            "availableLanguage": [{"@type": "Language", "name": "English"},
+                                  {"@type": "Language", "name": "Spanish"}],
+            "knowsAbout": [
+                "Orthopedic surgery", "Sports medicine", "Regenerative medicine",
+                "Platelet-rich plasma therapy", "Orthobiologics", "Peptide therapy",
+                "Podiatric surgery", "Foot and ankle surgery", "Varicose vein treatment",
+                "Peripheral neuropathy", "Mako robotic knee replacement",
+                "MISHA Knee System", "GLP-1 medical weight loss", "IV infusion therapy",
+            ],
             "isAcceptingNewPatients": True,
             "medicalSpecialty": ["Orthopedic surgery", "Sports medicine", "Podiatric medicine", "Regenerative medicine", "Phlebology"],
             "address": {
@@ -2902,20 +2949,94 @@ def build_meta():
     pages += [f"infusions/{i['slug']}.html" for i in INFUSIONS]
     pages += [f"blog/{p['slug']}.html" for p in BLOG_POSTS]
 
-    urls = "\n".join(
-        f"  <url><loc>{BASE}/{p}</loc></url>" for p in pages
-    )
+    # Crawl priority mirrors commercial intent: the money pages are the homepage,
+    # services, conditions and locations — not the legal boilerplate.
+    post_dates = {f"blog/{b['slug']}.html": b["date"] for b in BLOG_POSTS}
+
+    def _prio(u):
+        if u == "index.html":
+            return "1.0", "weekly"
+        if u.startswith(("services/", "conditions/", "infusions/")) or u == "iv-therapy.html":
+            return "0.9", "monthly"
+        if u.startswith("locations/"):
+            return "0.8", "monthly"
+        if u.startswith("providers/") or u in ("about.html", "contact.html", "faq.html"):
+            return "0.8", "monthly"
+        if u.startswith("blog/"):
+            return "0.6", "yearly"
+        if u.startswith("forms/"):
+            return "0.5", "yearly"
+        return "0.3", "yearly"
+
+    rows = []
+    for u in pages:
+        prio, freq = _prio(u)
+        lastmod = post_dates.get(u, SITE_UPDATED)
+        rows.append(f"  <url><loc>{BASE}/{u}</loc><lastmod>{lastmod}</lastmod>"
+                    f"<changefreq>{freq}</changefreq><priority>{prio}</priority></url>")
+    urls = "\n".join(rows)
     write("sitemap.xml", f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {urls}
 </urlset>
 """)
 
-    write("robots.txt", f"""User-agent: *
+    # RSS — how aggregators and several AI crawlers discover new posts.
+    items = ""
+    for b in BLOG_POSTS[:20]:
+        d = datetime.datetime.strptime(b["date"], "%Y-%m-%d").strftime("%a, %d %b %Y 09:00:00 +0000")
+        items += f"""    <item>
+      <title>{html.escape(b['title'])}</title>
+      <link>{BASE}/blog/{b['slug']}.html</link>
+      <guid isPermaLink="true">{BASE}/blog/{b['slug']}.html</guid>
+      <pubDate>{d}</pubDate>
+      <category>{html.escape(b['category'])}</category>
+      <description>{html.escape(b['desc'])}</description>
+    </item>
+"""
+    write("blog/feed.xml", f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{NAME} — Blog</title>
+    <link>{BASE}/blog/index.html</link>
+    <atom:link href="{BASE}/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Orthopedic, regenerative, podiatric and vein care insight from {NAME} in Palm Beach Gardens, Florida.</description>
+    <language>en-us</language>
+    <lastBuildDate>{datetime.datetime.strptime(SITE_UPDATED, "%Y-%m-%d").strftime("%a, %d %b %Y 09:00:00 +0000")}</lastBuildDate>
+{items}  </channel>
+</rss>
+""")
+
+    # AI crawlers are named explicitly. Several default to "no permission" when a
+    # site is silent, so being unlisted costs visibility in AI answers — which is
+    # where a growing share of "find me an orthopedist" queries now land.
+    ai_agents = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-User",
+                 "anthropic-ai", "PerplexityBot", "Perplexity-User", "Google-Extended",
+                 "Applebot", "Applebot-Extended", "Amazonbot", "Bytespider",
+                 "meta-externalagent", "CCBot", "cohere-ai", "DuckAssistBot",
+                 "MistralAI-User", "YouBot"]
+    ai_block = "\n\n".join(f"User-agent: {a}\nAllow: /" for a in ai_agents)
+    write("robots.txt", f"""# {NAME} — {BASE}
+
+User-agent: *
 Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+{ai_block}
 
 Sitemap: {BASE}/sitemap.xml
 """)
+
+    # IndexNow ownership proof — Bing and Yandex fetch this to verify a ping.
+    write(f"{INDEXNOW_KEY}.txt", INDEXNOW_KEY)
 
     write("site.webmanifest", json.dumps({
         "name": NAME,
