@@ -1227,7 +1227,8 @@ def svc_name(slug):
 
 from figure import (VB_W, VB_H, CX, SHOULDER_Y, SHOULDER_DX, ELBOW_Y, ELBOW_DX,
                     WRIST_Y, WRIST_DX, HIP_Y, HIP_DX, KNEE_Y, KNEE_DX, ANKLE_Y, ANKLE_DX,
-                    RIB_BOT, skeleton_svg, defs as figure_defs)
+                    RIB_BOT)
+from aura import aura_svg, aura_defs
 
 # Joint hotspots. Coordinates come from figure.py's landmarks so a hotspot can
 # never drift off the bone it points at.
@@ -1271,10 +1272,10 @@ def figure_svg(depth=0):
       <circle class="bm-hit" cx="{x}" cy="{y}" r="34"/>
     </a>""")
     nodes_html = "\n".join(nodes)
-    # Generate the bones FIRST: each one registers its own light-source gradient,
-    # and figure_defs() only knows about them once that has happened.
-    bones_html = skeleton_svg()
-    defs_html = figure_defs()
+    # The figure is a luminous form, not an anatomy chart — a skeleton read as
+    # clinical next to an IV lounge and a peptide menu.
+    body_html = aura_svg(FIGURE_NODES)
+    defs_html = aura_defs()
     return f"""<div class="figure-stage" aria-label="Interactive map of the body — choose an area to explore care options">
   <div class="figure-glow" aria-hidden="true"></div>
   <div class="figure-orbit" aria-hidden="true"></div>
@@ -1284,9 +1285,9 @@ def figure_svg(depth=0):
     <defs>
       {defs_html}
     </defs>
-    <ellipse cx="{CX}" cy="{VB_H // 2}" rx="{VB_W // 2 - 12}" ry="{VB_H // 2 - 20}" fill="url(#figGlow)"/>
-    <g class="fig-bones">
-      {bones_html}
+    <ellipse class="au-halo" cx="{CX}" cy="{VB_H // 2}" rx="{VB_W // 2 - 8}" ry="{VB_H // 2 - 14}"/>
+    <g class="fig-aura">
+      {body_html}
     </g>
     {nodes_html}
   </svg>

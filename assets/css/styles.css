@@ -448,57 +448,42 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
   background: linear-gradient(90deg, transparent, rgba(253, 201, 41, .7), transparent);
   filter: drop-shadow(0 0 6px rgba(253, 201, 41, .8));
   animation: scan 10s ease-in-out infinite; opacity: 0; transition: opacity 1s var(--ease) 1.6s; }
-.figure-stage.is-live .figure-scan { opacity: .5; }
+.figure-stage.is-live .figure-scan { opacity: 0; }
 @keyframes scan { 0%, 100% { transform: translateY(60px); } 50% { transform: translateY(690px); } }
 
-/* The skeleton is FILLED, not stroked. Thin open outlines read as clip-art at
-   display size — anatomical illustration gets its weight from mass. Bones fade
-   and rise into place when the section enters view. */
-.fig-bones { filter: url(#boneBloom); }
-.fig-bones .bn, .fig-bones .rib, .fig-bones .clav, .fig-bones .scap,
-.fig-bones .cart, .fig-bones .digit, .fig-bones .hair, .fig-bones .socket,
-  .fig-bones .ms, .fig-bones .mline {
-  opacity: 0; transform: translateY(9px); transform-box: fill-box; transform-origin: center;
+/* The figure is light, not anatomy. A skeleton reads clinical beside an IV
+   lounge; this is the same interactive navigation rendered as a wellness form. */
+.au-halo { fill: url(#auHalo); }
+.fig-aura { filter: url(#auBloom); }
+.au-mass {
+  fill: url(#auBody); filter: url(#auSoft);
+  opacity: 0; transform: scale(.97); transform-origin: center; transform-box: fill-box;
 }
-.figure-stage.is-live .fig-bones > * { animation: boneIn .9s var(--ease) forwards; }
-@keyframes boneIn { to { opacity: 1; transform: none; } }
-/* staggered so the figure assembles rather than switching on */
-.figure-stage.is-live .fig-bones > :nth-child(3n) { animation-delay: .1s; }
-.figure-stage.is-live .fig-bones > :nth-child(4n) { animation-delay: .22s; }
-.figure-stage.is-live .fig-bones > :nth-child(5n) { animation-delay: .34s; }
-.figure-stage.is-live .fig-bones > :nth-child(7n) { animation-delay: .46s; }
-.figure-stage.is-live .fig-bones > :nth-child(11n) { animation-delay: .58s; }
+.figure-stage.is-live .au-mass { animation: auRise 1.6s var(--ease) forwards; }
+.figure-stage.is-live .au-mass:nth-child(2) { animation-delay: .1s; }
+.figure-stage.is-live .au-mass:nth-child(3), .figure-stage.is-live .au-mass:nth-child(4) { animation-delay: .22s; }
+.figure-stage.is-live .au-mass:nth-child(5), .figure-stage.is-live .au-mass:nth-child(6) { animation-delay: .34s; }
+@keyframes auRise { to { opacity: 1; transform: none; } }
+/* a slow breath, so the form is never completely still */
+.figure-stage.is-live .fig-aura { animation: auBreathe 7s ease-in-out infinite 1.6s; transform-origin: 50% 55%; }
+@keyframes auBreathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.014); } }
 
-.fig-bones .bn { stroke: #7E5C10; stroke-width: .6; stroke-linejoin: round; }
-.fig-bones .ms { stroke: #6B2A14; stroke-width: .6; stroke-linejoin: round; opacity: 0; }
-.figure-stage.is-live .fig-bones .ms { animation-name: mscIn; }
-@keyframes mscIn { to { opacity: .94; transform: none; } }
-.fig-bones .mline { fill: none; stroke: #6B2A14; stroke-width: .9; stroke-linecap: round; opacity: 0; }
-.figure-stage.is-live .fig-bones .mline { animation-name: mlineIn; }
-@keyframes mlineIn { to { opacity: .45; transform: none; } }
-.fig-bones .proc { fill: #B98F2C; stroke: #7E5C10; stroke-width: .5; opacity: 0; }
-.figure-stage.is-live .fig-bones .proc { animation-name: procIn; }
-@keyframes procIn { to { opacity: .8; transform: none; } }
-.fig-bones .scap { fill: url(#boneFillSoft); stroke: #A9801C; stroke-width: .6; opacity: 0; }
-.figure-stage.is-live .fig-bones .scap { animation-name: scapIn; }
-@keyframes scapIn { to { opacity: .78; transform: none; } }
-/* ribs and clavicles are stroked bands — a filled rib at this scale turns to mush */
-.fig-bones .rib, .fig-bones .clav {
-  fill: none; stroke: url(#boneFill); stroke-width: 4.4; stroke-linecap: round;
+.au-thread {
+  fill: none; stroke: rgba(253, 201, 41, .55); stroke-width: 1.1;
+  stroke-dasharray: 5 13; stroke-linecap: round; opacity: 0;
 }
-.fig-bones .clav { stroke-width: 5; }
-.fig-bones .cart { fill: none; stroke: #C8A75A; stroke-width: 2.6; stroke-linecap: round; opacity: 0; }
-.figure-stage.is-live .fig-bones .cart { animation-name: cartIn; }
-@keyframes cartIn { to { opacity: .5; transform: none; } }
-.fig-bones .digit { fill: none; stroke: url(#boneFill); stroke-width: 3; stroke-linecap: round; }
-/* interior detail: sutures, teeth, sacral lines, toe joints */
-.fig-bones .hair { fill: none; stroke: #8C6A15; stroke-width: .8; stroke-linecap: round; opacity: 0; }
-.figure-stage.is-live .fig-bones .hair { animation-name: hairIn; }
-@keyframes hairIn { to { opacity: .55; transform: none; } }
-/* orbits, nasal aperture, obturator foramina — the dark voids that sell it */
-.fig-bones .socket { fill: #0A2647; stroke: #8C6A15; stroke-width: .6; opacity: 0; }
-.figure-stage.is-live .fig-bones .socket { animation-name: socketIn; }
-@keyframes socketIn { to { opacity: .92; transform: none; } }
+.figure-stage.is-live .au-thread {
+  animation: auThread 1.2s var(--ease) forwards var(--td, 0s), auFlow 5s linear infinite var(--td, 0s);
+}
+@keyframes auThread { to { opacity: .8; } }
+@keyframes auFlow { to { stroke-dashoffset: -36; } }
+
+.au-mote { fill: var(--gold); opacity: 0; }
+.figure-stage.is-live .au-mote { animation: auDrift 9s ease-in-out infinite var(--md, 0s); }
+@keyframes auDrift {
+  0%, 100% { opacity: 0; transform: translateY(6px); }
+  50% { opacity: .5; transform: translateY(-10px); }
+}
 
 /* interactive nodes */
 .bm-node { cursor: pointer; text-decoration: none; opacity: 0; transition: opacity .8s var(--ease) 1.5s; }
@@ -1126,7 +1111,8 @@ body.nav-locked .mobile-call { display: none !important; }
   .reveal { opacity: 1; transform: none; }
   .h-rise { animation: none; opacity: 1; }
   .hero-scene { animation: none; }
-  .fig-bones > *, .fig-bones .scap, .fig-bones .cart, .fig-bones .hair, .fig-bones .socket { opacity: 1; transform: none; animation: none !important; }
+  .au-mass, .au-thread { opacity: 1; transform: none; animation: none !important; }
+  .au-mote, .fig-aura { animation: none !important; }
   .bm-node { opacity: 1; transition: none; }
   .figure-scan, .figure-orbit, .scene-birds, .scene-swells, .scene-sparkles, .scene-rollers, .scene-wash { display: none; }
   .marquee-track { animation: none; flex-wrap: wrap; width: auto; }

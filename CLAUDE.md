@@ -52,14 +52,23 @@ Static site, 56 pages, generated — do not edit HTML files directly.
 - Mobile Call Now pill is fixed bottom-LEFT; the assistant launcher owns bottom-right.
   Don't move either.
 
-## The anatomy figure
-`figure.py` owns the skeleton. Bones are FILLED shapes on a gradient with a hairline
-stroke — an earlier version stroked thin open outlines and read as clip-art; do not
-go back to that. All geometry derives from the LANDMARKS block, and FIGURE_NODES in
-build.py imports those same landmarks, so hotspots cannot drift off the bones. Paint
-order IS the depth cue (scapulae behind the cage, clavicles in front). Deliberately
-absent: costal cartilage (it closed the sternal gap into a ladder) and cervical
-transverse lines (they turned the neck into a coil spring).
+## The homepage figure
+`aura.py` renders it: a luminous human form built from soft masses (head, trunk,
+arms, legs) under a blur + bloom, with gold treatment points and drifting light
+threads between them. It replaced an anatomically-correct skeleton — that read as
+clinical beside an IV lounge and a peptide menu, which is the wrong half of this
+practice's identity. Do not put anatomy back without asking.
+
+`figure.py` is now the geometry source: the LANDMARKS block drives the aura form,
+the hotspots and the label leaders together. Its skeleton/muscle renderers are
+retained but unused — keep the landmarks if you delete them.
+
+Two traps that cost real time here:
+- `auBody` MUST stay `gradientUnits="userSpaceOnUse"`. The objectBoundingBox
+  default maps a fresh gradient onto every shape, so head, torso and each limb
+  light separately and the body breaks into seamed parts.
+- The arm masses deliberately overlap the trunk. Drawn clear of it, the gap shows
+  background through the lit figure as a hard black void.
 
 ## SEO — keep maximized
 - Org node: MedicalClinic+MedicalBusiness @id https://www.regenorthopb.com/#organization.
