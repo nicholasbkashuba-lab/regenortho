@@ -419,6 +419,31 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
 .h-rise { opacity: 0; animation: hRise .95s var(--ease) forwards; animation-delay: var(--hd, 0s); }
 @keyframes hRise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
 
+/* ------------------------------ particle field --------------------------- */
+
+.section-field { overflow: hidden; }
+.field-inner { position: relative; max-width: var(--wrap); margin: 0 auto;
+  display: grid; grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+  gap: 3rem; align-items: center; }
+.field-copy h2 { margin: .8rem 0 1rem; }
+
+.field-stage { position: relative; width: 100%; aspect-ratio: 5 / 4;
+  cursor: crosshair; touch-action: pan-y; }
+.field-stage canvas { display: block; width: 100%; height: 100%; }
+.field-hint {
+  position: absolute; left: 50%; bottom: .2rem; transform: translateX(-50%);
+  margin: 0; font: 700 .68rem/1 var(--sans); letter-spacing: .18em;
+  text-transform: uppercase; color: rgba(201, 214, 228, .5);
+  transition: opacity .4s var(--ease); pointer-events: none;
+}
+.field-stage:hover .field-hint { opacity: 0; }
+
+@media (max-width: 900px) {
+  .field-inner { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .field-stage { aspect-ratio: 4 / 3; cursor: default; }
+}
+@media (prefers-reduced-motion: reduce) { .field-hint { display: none; } }
+
 /* ------------------------------ the drip shelf --------------------------- */
 /* The IV bags are the practice's own product renders — nobody else has them,
    and a luxury wellness menu is far closer to what this practice is than an

@@ -1366,6 +1366,26 @@ def build_home():
   </div>
 </section>
 
+<section class="section section-dark section-field" id="regenerate">
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="field-inner">
+    <div class="field-copy reveal">
+      <p class="eyebrow">The Regeneration of Orthopedics</p>
+      <h2>Your body already knows <em>how to repair itself</em></h2>
+      <p class="anatomy-lede">Every therapy here works the same way: concentrate what your body uses to heal — platelets, growth factors, peptides, cellular signals — and put it exactly where the damage is. Surgery when it's genuinely the answer. Regeneration when it isn't.</p>
+      <div class="cta-row anatomy-cta">
+        <a class="btn btn-gold" href="services/regenerative-medicine-orthobiologics.html">How regeneration works</a>
+        <a class="btn btn-ghost-light" href="contact.html#book">Book a consultation</a>
+      </div>
+    </div>
+    <div class="field-stage" data-particles data-words="RENEW|REPAIR|RESTORE|THRIVE">
+      <canvas aria-hidden="true"></canvas>
+      <p class="field-hint" aria-hidden="true">Move your cursor through it</p>
+      <p class="sr-only">An animated field of particles that forms the words renew, repair, restore and thrive.</p>
+    </div>
+  </div>
+</section>
+
 <section class="section section-services" id="services">
   <div class="section-head reveal">
     <p class="eyebrow">One Roof. Every Answer.</p>
@@ -1510,7 +1530,7 @@ def build_home():
 
 {cta_band(d)}
 </main>
-{footer(d)}"""
+{footer(d, extra_js="assets/js/particles.js")}"""
 
     schema = breadcrumb_schema([("", "Home")])
     page = head(
