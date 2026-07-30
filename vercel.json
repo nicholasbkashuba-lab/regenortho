@@ -1,0 +1,335 @@
+{
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/about-us",
+      "destination": "/about.html",
+      "permanent": true
+    },
+    {
+      "source": "/dr-marc-matarazzo-md",
+      "destination": "/providers/dr-marc-matarazzo.html",
+      "permanent": true
+    },
+    {
+      "source": "/dr-orlando-cedano-dpm",
+      "destination": "/providers/dr-orlando-cedeno.html",
+      "permanent": true
+    },
+    {
+      "source": "/our-services",
+      "destination": "/services/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/our-services/orthopedic-sports-medicine",
+      "destination": "/services/orthopedic-sports-medicine.html",
+      "permanent": true
+    },
+    {
+      "source": "/our-services/podiatric-medicine-foot-ankle-surgery",
+      "destination": "/services/podiatric-medicine-foot-ankle-surgery.html",
+      "permanent": true
+    },
+    {
+      "source": "/our-services/regenerative-medicine-orthobiologic-therapies",
+      "destination": "/services/regenerative-medicine-orthobiologics.html",
+      "permanent": true
+    },
+    {
+      "source": "/our-services/advanced-non-surgical-therapies",
+      "destination": "/services/advanced-non-surgical-therapies.html",
+      "permanent": true
+    },
+    {
+      "source": "/our-services/vein-care-medical-cosmetic",
+      "destination": "/services/vein-care.html",
+      "permanent": true
+    },
+    {
+      "source": "/our-services/iv-recovery-wellness-therapy",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/our-services/misha-knee-system",
+      "destination": "/services/misha-knee-system.html",
+      "permanent": true
+    },
+    {
+      "source": "/our-services/concierge-cash-pay-services",
+      "destination": "/services/concierge-care.html",
+      "permanent": true
+    },
+    {
+      "source": "/our-services/neuropathy-treatment-pathway",
+      "destination": "/services/neuropathy-program.html",
+      "permanent": true
+    },
+    {
+      "source": "/mako-total-knee",
+      "destination": "/services/mako-robotic-knee-replacement.html",
+      "permanent": true
+    },
+    {
+      "source": "/glp-1-program",
+      "destination": "/services/medical-weight-loss.html",
+      "permanent": true
+    },
+    {
+      "source": "/weightlosspalmbeach",
+      "destination": "/services/medical-weight-loss.html",
+      "permanent": true
+    },
+    {
+      "source": "/peptide-glp-questionnaire",
+      "destination": "/services/medical-weight-loss.html",
+      "permanent": true
+    },
+    {
+      "source": "/saphenous-vein-insufficiency-treatment",
+      "destination": "/services/vein-care.html",
+      "permanent": true
+    },
+    {
+      "source": "/greater-or-lesser-saphenous-veins",
+      "destination": "/services/vein-care.html",
+      "permanent": true
+    },
+    {
+      "source": "/hangover",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/recovery",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/cleanse",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/myers-plus",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/nad%E2%81%BA-500-mg",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/immune-boost-vit-c-zinc-gsh",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/dhydration-basic-electrolyte",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/athletic-recovery-performance-myers-amino-6",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/beauty-glow-anti-aging-myers-biotin",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/performance-energy-myers-amino-6",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/all-inclusive",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/neuro-restore-iv-infusion",
+      "destination": "/iv-therapy.html",
+      "permanent": true
+    },
+    {
+      "source": "/ivig-intravenous-immunoglobulin",
+      "destination": "/infusions/ivig.html",
+      "permanent": true
+    },
+    {
+      "source": "/krystexxa-infusion-therapy",
+      "destination": "/infusions/krystexxa.html",
+      "permanent": true
+    },
+    {
+      "source": "/ocrevus-treatment",
+      "destination": "/infusions/ocrevus.html",
+      "permanent": true
+    },
+    {
+      "source": "/ultomiris-infusion",
+      "destination": "/infusions/ultomiris.html",
+      "permanent": true
+    },
+    {
+      "source": "/patient-resources",
+      "destination": "/patient-resources.html",
+      "permanent": true
+    },
+    {
+      "source": "/new-patient-intake",
+      "destination": "/patient-resources.html",
+      "permanent": true
+    },
+    {
+      "source": "/iv-interval-screening",
+      "destination": "/patient-resources.html",
+      "permanent": true
+    },
+    {
+      "source": "/consent-medical-screening",
+      "destination": "/patient-resources.html",
+      "permanent": true
+    },
+    {
+      "source": "/contact-us",
+      "destination": "/contact.html",
+      "permanent": true
+    },
+    {
+      "source": "/thank-you",
+      "destination": "/contact.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/category/:slug*",
+      "destination": "/blog/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog/prp-therapy-knee-osteoarthritis-palm-beach",
+      "destination": "/blog/prp-therapy-knee-osteoarthritis.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog/five-pillar-concierge-orthopedic-recovery-palm-beach",
+      "destination": "/blog/five-pillar-concierge-orthopedic-recovery.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog/regenerative-medicine-vs-joint-replacement-palm-beach",
+      "destination": "/blog/regenerative-medicine-vs-joint-replacement.html",
+      "permanent": true
+    },
+    {
+      "source": "/regenerative-medicine/regenerative-medicine-joint-pain-palm-beach",
+      "destination": "/blog/knee-shoulder-hip-pain-without-surgery.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog/the-role-of-orthopedic-sports-medicine-in-pain-free-living",
+      "destination": "/blog/orthopedic-sports-medicine-pain-free-living.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog/regenerative-medicine-the-future-of-healing-and-recovery",
+      "destination": "/blog/regenerative-medicine-future-of-healing.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog/the-future-of-regenerative-medicine-healing-without-surgery",
+      "destination": "/blog/healing-without-surgery.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog/the-future-of-podiatric-medicine-minimally-invasive-foot-ankle-surgery",
+      "destination": "/blog/minimally-invasive-foot-ankle-surgery.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog/the-future-of-vein-care-modern-treatments-for-varicose-spider-veins",
+      "destination": "/blog/modern-vein-care-varicose-spider-veins.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog/iv-therapy-for-recovery-wellness-recharge-your-body-from-within",
+      "destination": "/blog/iv-therapy-recovery-wellness.html",
+      "permanent": true
+    },
+    {
+      "source": "/terms-conditions",
+      "destination": "/terms.html",
+      "permanent": true
+    },
+    {
+      "source": "/wp-content/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/wp-json/:path*",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/forms/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0, must-revalidate"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    }
+  ]
+}
