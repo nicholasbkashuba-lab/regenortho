@@ -1366,6 +1366,27 @@ def build_home():
   </div>
 </section>
 
+<section class="section section-dark section-word" id="regenerate">
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="word-inner">
+    <p class="eyebrow reveal">The Regeneration of Orthopedics</p>
+    <p class="word-stage" data-word>
+      <span class="sr-only">Renew. Repair. Restore. Thrive.</span>
+      <span class="word-slot" aria-hidden="true">
+        <span class="word is-on">Renew</span>
+        <span class="word">Repair</span>
+        <span class="word">Restore</span>
+        <span class="word">Thrive</span>
+      </span>
+    </p>
+    <p class="word-lede reveal">Every therapy here works the same way — concentrate what your body already uses to heal, and put it exactly where the damage is. Surgery when it is genuinely the answer. Regeneration when it is not.</p>
+    <div class="cta-row word-cta reveal">
+      <a class="btn btn-gold" href="services/regenerative-medicine-orthobiologics.html">How regeneration works</a>
+      <a class="btn btn-ghost-light" href="contact.html#book">Book a consultation</a>
+    </div>
+  </div>
+</section>
+
 <section class="section section-services" id="services">
   <div class="section-head reveal">
     <p class="eyebrow">One Roof. Every Answer.</p>
@@ -1495,17 +1516,6 @@ def build_home():
   <ul class="assoc-row">
     {assoc}
   </ul>
-</section>
-
-<section class="section section-blog" id="from-the-blog">
-  <div class="section-head reveal">
-    <p class="eyebrow">From the Blog</p>
-    <h2>Insights on <em>healing smarter</em></h2>
-  </div>
-  <div class="post-grid">
-    {blog_cards}
-  </div>
-  <p class="section-foot reveal"><a class="btn btn-navy" href="blog/index.html">Read all articles</a></p>
 </section>
 
 {cta_band(d)}

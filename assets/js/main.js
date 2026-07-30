@@ -255,6 +255,35 @@
     });
   }
 
+  /* --------------------------------------------------------- word cycle */
+  var wordStage = document.querySelector("[data-word]");
+  if (wordStage) {
+    var words = Array.prototype.slice.call(wordStage.querySelectorAll(".word"));
+    var wIdx = 0, wTimer = null;
+
+    function showWord(n) {
+      var prev = words[wIdx];
+      wIdx = (n + words.length) % words.length;
+      prev.classList.remove("is-on");
+      prev.classList.add("is-off");
+      // let the outgoing word clear before the next one lands
+      setTimeout(function () { prev.classList.remove("is-off"); }, 900);
+      words[wIdx].classList.add("is-on");
+    }
+    function playWords() {
+      if (reduceMotion) return;
+      stopWords();
+      wTimer = setInterval(function () { showWord(wIdx + 1); }, 3400);
+    }
+    function stopWords() { if (wTimer) { clearInterval(wTimer); wTimer = null; } }
+
+    wordStage.addEventListener("click", function () { showWord(wIdx + 1); playWords(); });
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) stopWords(); else playWords();
+    });
+    playWords();
+  }
+
   /* ------------------------------------------- assistant deep-link hook */
   document.querySelectorAll("[data-open-assist]").forEach(function (btn) {
     btn.addEventListener("click", function () {

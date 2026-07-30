@@ -419,6 +419,43 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
 .h-rise { opacity: 0; animation: hRise .95s var(--ease) forwards; animation-delay: var(--hd, 0s); }
 @keyframes hRise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
 
+/* ------------------------------ the word ---------------------------------- */
+/* One enormous serif word, gold gradient with a light sweep running through it,
+   cross-fading to the next. An earlier build made the same words out of
+   particles; at display size that read as confetti rather than typography. */
+
+.section-word { overflow: hidden; }
+.word-inner { position: relative; max-width: 900px; margin: 0 auto; text-align: center; }
+
+.word-stage { position: relative; margin: 1rem 0 1.6rem; height: clamp(4.5rem, 13vw, 11rem); }
+.word-slot { display: block; position: relative; height: 100%; }
+.word {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-weight: 600;
+  font-size: clamp(3.4rem, 11.5vw, 10rem); line-height: 1; letter-spacing: -.02em;
+  /* the sweep: a wide gold gradient clipped to the glyphs, panned slowly */
+  background: linear-gradient(100deg,
+    #C99A22 0%, #F0CB5A 18%, #FFF6D6 30%, #FDC929 42%, #B8861B 62%, #F0CB5A 84%, #C99A22 100%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+  opacity: 0; transform: translateY(.22em) scale(.985);
+  transition: opacity .9s var(--ease), transform .9s var(--ease);
+  will-change: opacity, transform;
+}
+.word.is-on { opacity: 1; transform: none; animation: wordSweep 7s linear infinite; }
+@keyframes wordSweep { from { background-position: 130% 50%; } to { background-position: -130% 50%; } }
+.word.is-off { opacity: 0; transform: translateY(-.16em) scale(1.015); }
+
+.word-lede { font-size: 1.05rem; color: #B9C9DA; max-width: 60ch; margin: 0 auto; }
+.word-cta { justify-content: center; margin-top: 1.9rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .word { transition: none; }
+  .word.is-on { animation: none; background-position: 50% 50%; }
+}
+
 /* ------------------------------ the drip shelf --------------------------- */
 /* The IV bags are the practice's own product renders — nobody else has them,
    and a luxury wellness menu is far closer to what this practice is than an
