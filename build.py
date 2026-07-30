@@ -522,30 +522,18 @@ ASSOCIATIONS = [
 ]
 
 IV_MENU = [
-    {"name": "Hangover", "price": 299, "bag": "bag-hydration.png",
-     "desc": "Rehydrates, detoxifies, and relieves headaches, nausea, and fatigue from dehydration, alcohol, or overexertion."},
-    {"name": "Recovery", "price": 299, "bag": "bag-athletic.png",
-     "desc": "Supports post-surgery healing and sports recovery with rehydration and targeted nutrients."},
-    {"name": "Performance / Energy (Myers + Amino-6)", "price": 225, "bag": "bag-myers.png",
-     "desc": "Increases energy, endurance, and focus with amino acids and B-vitamins to combat fatigue and optimize daily performance."},
-    {"name": "Beauty / Glow / Anti-Aging (Myers + Biotin)", "price": 259, "bag": "bag-beauty.png",
-     "desc": "Promotes radiant skin, stronger hair and nails, and overall anti-aging wellness through targeted vitamins and antioxidants."},
-    {"name": "Hydration / Basic Electrolyte", "price": 189, "bag": "bag-hydration.png",
-     "desc": "Rapidly restores fluid and electrolyte balance for dehydration, heat exposure, or post-workout recovery."},
-    {"name": "Myers’ PLUS", "price": 225, "bag": "bag-myers.png",
-     "desc": "Foundational wellness infusion supporting energy, immune balance, and recovery by replenishing essential vitamins and minerals lost to stress, fatigue, or illness."},
-    {"name": "Immune Boost (Vit C + Zinc + GSH)", "price": 259, "bag": "bag-immune.png",
-     "desc": "Strengthens the immune system, reduces inflammation, and supports faster recovery from viral or seasonal illness."},
-    {"name": "Cleanse", "price": 349, "bag": "bag-cleanse.png",
-     "desc": "Deep detox and metabolic reset designed to cleanse the liver, flush toxins, and restore energy and clarity."},
-    {"name": "NAD⁺ 500 mg", "price": 499, "bag": "bag-nad.png",
-     "desc": "High-dose NAD⁺ infusion for deep cellular rejuvenation, energy renewal, and neuroprotective support."},
-    {"name": "Athletic Recovery & Performance (Myers + Amino-6)", "price": 225, "bag": "bag-athletic.png",
-     "desc": "Rebuilds and refuels muscles with amino acids and electrolytes to enhance performance, reduce soreness, and accelerate recovery."},
-    {"name": "Neuro Restore", "price": 231, "bag": "bag-nad.png",
-     "desc": "Antioxidant and nerve support with Alpha Lipoic Acid (ALA) and Vitamin B12 to help promote healthy nerve function and neurological wellness."},
-    {"name": "All-Inclusive", "price": 399, "bag": "bag-all-inclusive.png",
-     "desc": "Comprehensive full-body infusion delivering vitamins, minerals, amino acids, antioxidants, and hydration for total wellness optimization."},
+    {"name": 'Hangover', "short": "Hangover", "cat": "recovery", "ingredients": "Rehydration · B-complex · anti-nausea", "price": 299, "bag": "bag-hydration.png", "desc": 'Rehydrates, detoxifies, and relieves headaches, nausea, and fatigue from dehydration, alcohol, or overexertion.'},
+    {"name": 'Recovery', "short": "Recovery", "cat": "recovery", "ingredients": "Fluids · electrolytes · amino blend", "price": 299, "bag": "bag-athletic.png", "desc": 'Supports post-surgery healing and sports recovery with rehydration and targeted nutrients.'},
+    {"name": 'Performance / Energy (Myers + Amino-6)', "short": "Performance", "cat": "performance", "ingredients": "Myers’ cocktail · Amino-6", "price": 225, "bag": "bag-myers.png", "desc": 'Increases energy, endurance, and focus with amino acids and B-vitamins to combat fatigue and optimize daily performance.'},
+    {"name": 'Beauty / Glow / Anti-Aging (Myers + Biotin)', "short": "Beauty &amp; Glow", "cat": "beauty", "ingredients": "Myers’ cocktail · biotin · glutathione", "price": 259, "bag": "bag-beauty.png", "desc": 'Promotes radiant skin, stronger hair and nails, and overall anti-aging wellness through targeted vitamins and antioxidants.'},
+    {"name": 'Hydration / Basic Electrolyte', "short": "Hydration", "cat": "beauty", "ingredients": "Saline · balanced electrolytes", "price": 189, "bag": "bag-hydration.png", "desc": 'Rapidly restores fluid and electrolyte balance for dehydration, heat exposure, or post-workout recovery.'},
+    {"name": 'Myers’ PLUS', "short": "Myers’ PLUS", "cat": "performance", "ingredients": "The classic Myers’, reinforced", "price": 225, "bag": "bag-myers.png", "desc": 'Foundational wellness infusion supporting energy, immune balance, and recovery by replenishing essential vitamins and minerals lost to stress, fatigue, or illness.'},
+    {"name": 'Immune Boost (Vit C + Zinc + GSH)', "short": "Immune Boost", "cat": "wellness", "ingredients": "Vitamin C · zinc · glutathione", "price": 259, "bag": "bag-immune.png", "desc": 'Strengthens the immune system, reduces inflammation, and supports faster recovery from viral or seasonal illness.'},
+    {"name": 'Cleanse', "short": "Cleanse", "cat": "recovery", "ingredients": "Detox support · glutathione", "price": 349, "bag": "bag-cleanse.png", "desc": 'Deep detox and metabolic reset designed to cleanse the liver, flush toxins, and restore energy and clarity.'},
+    {"name": 'NAD⁺ 500 mg', "short": "NAD⁺ 500 mg", "cat": "performance", "ingredients": "500 mg NAD⁺ · cellular energy", "price": 499, "bag": "bag-nad.png", "desc": 'High-dose NAD⁺ infusion for deep cellular rejuvenation, energy renewal, and neuroprotective support.'},
+    {"name": 'Athletic Recovery & Performance (Myers + Amino-6)', "short": "Athletic Recovery", "cat": "recovery", "ingredients": "Myers’ cocktail · Amino-6", "price": 225, "bag": "bag-athletic.png", "desc": 'Rebuilds and refuels muscles with amino acids and electrolytes to enhance performance, reduce soreness, and accelerate recovery.'},
+    {"name": 'Neuro Restore', "short": "Neuro Restore", "cat": "wellness", "ingredients": "Cognitive &amp; nerve support", "price": 231, "bag": "bag-nad.png", "desc": 'Antioxidant and nerve support with Alpha Lipoic Acid (ALA) and Vitamin B12 to help promote healthy nerve function and neurological wellness.'},
+    {"name": 'All-Inclusive', "short": "All-Inclusive", "cat": "wellness", "ingredients": "Every add-in on the menu", "price": 399, "bag": "bag-all-inclusive.png", "desc": 'Comprehensive full-body infusion delivering vitamins, minerals, amino acids, antioxidants, and hydration for total wellness optimization.'},
 ]
 
 INFUSIONS = [
@@ -1391,6 +1379,18 @@ def build_home():
         for p_ in posts
     )
 
+    drip_cards_html = "".join(f"""<li class="drip-card" data-cat="{v['cat']}" style="--dd:{k * 70}ms; --df:{6.5 + (k % 5) * 1.4}s; --dp:{(k % 7) * 0.8}s">
+      <a href="iv-therapy.html">
+        <span class="drip-bag"><img src="assets/media/{v['bag']}?v={asset_v('assets/media/' + v['bag'])}" alt="{v['short']} IV drip bag" width="150" height="230" loading="lazy"></span>
+        <span class="drip-body">
+          <strong>{v['short']}</strong>
+          <span class="drip-ing">{v['ingredients']}</span>
+          <span class="drip-desc">{v['desc']}</span>
+        </span>
+        <span class="drip-price">${v['price']}</span>
+      </a>
+    </li>""" for k, v in enumerate(IV_MENU))
+
     body = f"""{nav(d)}
 <main id="main">
 <section class="hero" id="hero">
@@ -1449,27 +1449,30 @@ def build_home():
   </div>
 </section>
 
-<section class="section section-dark section-anatomy" id="body-map">
+<section class="section section-dark section-drips" id="drip-menu">
   <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
-  <div class="anatomy-inner">
-    <div class="anatomy-copy reveal">
-      <p class="eyebrow">The Body, Mapped</p>
-      <h2>One practice for <em>every point</em> on this figure</h2>
-      <p class="anatomy-lede">Most clinics treat one region and refer the rest away. RegenOrtho Palm Beach was built the other way around: orthopedic surgery, podiatry, regenerative medicine, vein care, nerve restoration, and IV wellness — one roof, one record, one team reading the whole picture.</p>
-      <ul class="check-list anatomy-list">
-        <li>Board-certified surgeons for shoulder, knee, hip, foot &amp; ankle</li>
-        <li>Regenerative options before surgery is ever on the table</li>
-        <li>Same-week evaluations — often same-day for acute injuries</li>
-      </ul>
-      <div class="cta-row anatomy-cta">
-        <a class="btn btn-gold" href="contact.html#book">Book a Consultation</a>
-        <a class="btn btn-ghost-light" href="services/index.html">Explore every service</a>
-      </div>
-    </div>
-    <div class="anatomy-stage">
-      {figure_svg(0)}
-    </div>
+  <div class="section-head reveal">
+    <p class="eyebrow">The IV Lounge</p>
+    <h2>Twelve drips, <em>one for the way you feel today</em></h2>
+    <p class="section-sub">Physician-formulated infusions in a private Palm Beach Gardens suite — hydration and recovery through NAD⁺ and cellular performance. Every bag is mixed for you, not pulled off a shelf.</p>
   </div>
+
+  <div class="drip-filter reveal" role="tablist" aria-label="Filter infusions by goal">
+    <button type="button" class="drip-chip is-active" role="tab" aria-selected="true" data-cat="all">Everything</button>
+    <button type="button" class="drip-chip" role="tab" aria-selected="false" data-cat="recovery">Recovery</button>
+    <button type="button" class="drip-chip" role="tab" aria-selected="false" data-cat="performance">Performance</button>
+    <button type="button" class="drip-chip" role="tab" aria-selected="false" data-cat="beauty">Beauty</button>
+    <button type="button" class="drip-chip" role="tab" aria-selected="false" data-cat="wellness">Wellness</button>
+  </div>
+
+  <ul class="drip-shelf reveal" data-drips>
+    {drip_cards_html}
+  </ul>
+
+  <p class="section-foot reveal">
+    <a class="btn btn-gold" href="contact.html#book">Book an infusion</a>
+    <a class="btn btn-ghost-light" href="iv-therapy.html">See the full IV menu</a>
+  </p>
 </section>
 
 <section class="section section-services" id="services">

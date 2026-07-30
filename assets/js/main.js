@@ -306,6 +306,32 @@
     }
   }
 
+  /* ------------------------------------------------------- drip filter */
+  var dripShelf = document.querySelector("[data-drips]");
+  if (dripShelf) {
+    var dripChips = Array.prototype.slice.call(document.querySelectorAll(".drip-chip"));
+    var dripCards = Array.prototype.slice.call(dripShelf.querySelectorAll(".drip-card"));
+    dripChips.forEach(function (chip, i) {
+      chip.addEventListener("click", function () {
+        var cat = chip.getAttribute("data-cat");
+        dripChips.forEach(function (c) {
+          var on = c === chip;
+          c.classList.toggle("is-active", on);
+          c.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        dripCards.forEach(function (card) {
+          card.classList.toggle("is-out", cat !== "all" && card.getAttribute("data-cat") !== cat);
+        });
+      });
+      chip.addEventListener("keydown", function (e) {
+        var next = null;
+        if (e.key === "ArrowRight") next = dripChips[(i + 1) % dripChips.length];
+        if (e.key === "ArrowLeft") next = dripChips[(i - 1 + dripChips.length) % dripChips.length];
+        if (next) { e.preventDefault(); next.focus(); next.click(); }
+      });
+    });
+  }
+
   /* ------------------------------------------- assistant deep-link hook */
   document.querySelectorAll("[data-open-assist]").forEach(function (btn) {
     btn.addEventListener("click", function () {
