@@ -93,17 +93,24 @@ That is a real change in risk, not a config tweak. Before wiring up any destinat
 This is engineering guidance, not legal advice. Have the practice's HIPAA compliance
 contact or counsel sign off before turning on electronic delivery.
 
-## Deploying (handover plan)
+## Deploying
 
-This folder is fully self-contained. To move it to the practice's own accounts:
+This repository IS the site — `index.html` and `vercel.json` sit at the root. That matters:
+Vercel only reads the `vercel.json` at a repository's root, so serving this from a
+subdirectory of another repo silently disables every redirect and header in it.
 
-1. Copy this `regenortho/` folder into a fresh GitHub repository (its own account/org).
-2. Import the repo into their own Vercel account — no build step needed (static output;
-   `vercel.json` is already configured). Set the production domain to `www.regenorthopb.com`.
+To deploy:
+
+1. Import this repo into Vercel. No build step and no framework — it's static output that
+   is committed, and `vercel.json` is already configured.
+2. Set the production domain to `www.regenorthopb.com`.
 3. Point DNS: `A @ → 76.76.21.21`, `CNAME www → cname.vercel-dns.com`.
-4. Submit `sitemap.xml` in their Google Search Console and update the Google Business
-   Profile website link.
+4. Submit `sitemap.xml` in Google Search Console and update the Google Business Profile
+   website link.
 5. Click the FormSubmit activation email on the first lead.
+
+To hand the whole thing to the practice, transfer this repo to their GitHub account and
+re-import it under their own Vercel account — nothing in the code needs to change.
 
 ## SEO — do not regress
 
