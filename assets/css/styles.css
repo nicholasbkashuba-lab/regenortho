@@ -451,20 +451,44 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
 .figure-stage.is-live .figure-scan { opacity: .5; }
 @keyframes scan { 0%, 100% { transform: translateY(60px); } 50% { transform: translateY(690px); } }
 
-/* skeletal linework draws in when the section enters view */
-.fig-lines .fl { stroke-dasharray: 1; stroke-dashoffset: 1; }
-.figure-stage.is-live .fig-lines .fl { animation: drawIn 1.15s var(--ease) forwards; }
-.figure-stage.is-live .fig-lines .fl:nth-child(2n) { animation-delay: .22s; }
-.figure-stage.is-live .fig-lines .fl:nth-child(3n) { animation-delay: .45s; }
-.figure-stage.is-live .fig-lines .fl:nth-child(5n) { animation-delay: .68s; }
-.figure-stage.is-live .fig-lines .fl:nth-child(7n) { animation-delay: .9s; }
-.figure-stage.is-live .fig-lines .fl:nth-child(11n) { animation-delay: 1.1s; }
-@keyframes drawIn { to { stroke-dashoffset: 0; } }
-.fig-lines { opacity: .95; }
-.fig-lines .cap-o { opacity: .5; }
-.fig-lines .cap-i { opacity: .9; }
-.fig-lines .vert, .fig-lines .rib { stroke-width: 1; }
-.fig-lines .faint { stroke-width: .9; opacity: .4; }
+/* The skeleton is FILLED, not stroked. Thin open outlines read as clip-art at
+   display size — anatomical illustration gets its weight from mass. Bones fade
+   and rise into place when the section enters view. */
+.fig-bones { filter: url(#boneBloom); }
+.fig-bones .bn, .fig-bones .rib, .fig-bones .clav, .fig-bones .scap,
+.fig-bones .cart, .fig-bones .digit, .fig-bones .hair, .fig-bones .socket {
+  opacity: 0; transform: translateY(9px); transform-box: fill-box; transform-origin: center;
+}
+.figure-stage.is-live .fig-bones > * { animation: boneIn .9s var(--ease) forwards; }
+@keyframes boneIn { to { opacity: 1; transform: none; } }
+/* staggered so the figure assembles rather than switching on */
+.figure-stage.is-live .fig-bones > :nth-child(3n) { animation-delay: .1s; }
+.figure-stage.is-live .fig-bones > :nth-child(4n) { animation-delay: .22s; }
+.figure-stage.is-live .fig-bones > :nth-child(5n) { animation-delay: .34s; }
+.figure-stage.is-live .fig-bones > :nth-child(7n) { animation-delay: .46s; }
+.figure-stage.is-live .fig-bones > :nth-child(11n) { animation-delay: .58s; }
+
+.fig-bones .bn { fill: url(#boneFill); stroke: #A9801C; stroke-width: .7; stroke-linejoin: round; }
+.fig-bones .scap { fill: url(#boneFillSoft); stroke: #A9801C; stroke-width: .6; opacity: 0; }
+.figure-stage.is-live .fig-bones .scap { animation-name: scapIn; }
+@keyframes scapIn { to { opacity: .78; transform: none; } }
+/* ribs and clavicles are stroked bands — a filled rib at this scale turns to mush */
+.fig-bones .rib, .fig-bones .clav {
+  fill: none; stroke: url(#boneFill); stroke-width: 4.4; stroke-linecap: round;
+}
+.fig-bones .clav { stroke-width: 5; }
+.fig-bones .cart { fill: none; stroke: #C8A75A; stroke-width: 2.6; stroke-linecap: round; opacity: 0; }
+.figure-stage.is-live .fig-bones .cart { animation-name: cartIn; }
+@keyframes cartIn { to { opacity: .5; transform: none; } }
+.fig-bones .digit { fill: none; stroke: url(#boneFill); stroke-width: 3; stroke-linecap: round; }
+/* interior detail: sutures, teeth, sacral lines, toe joints */
+.fig-bones .hair { fill: none; stroke: #8C6A15; stroke-width: .8; stroke-linecap: round; opacity: 0; }
+.figure-stage.is-live .fig-bones .hair { animation-name: hairIn; }
+@keyframes hairIn { to { opacity: .55; transform: none; } }
+/* orbits, nasal aperture, obturator foramina — the dark voids that sell it */
+.fig-bones .socket { fill: #0A2647; stroke: #8C6A15; stroke-width: .6; opacity: 0; }
+.figure-stage.is-live .fig-bones .socket { animation-name: socketIn; }
+@keyframes socketIn { to { opacity: .92; transform: none; } }
 
 /* interactive nodes */
 .bm-node { cursor: pointer; text-decoration: none; opacity: 0; transition: opacity .8s var(--ease) 1.5s; }
@@ -488,8 +512,8 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
 .bm-node:hover .bm-ring, .bm-node.is-active .bm-ring, .bm-node:focus .bm-ring { stroke: #FFFFFF; stroke-width: 2; filter: drop-shadow(0 0 8px rgba(190, 225, 255, .95)); }
 .bm-node:hover .bm-dot, .bm-node.is-active .bm-dot { filter: drop-shadow(0 0 9px rgba(210, 235, 255, 1)); }
 .bm-node.is-active .bm-halo { animation-duration: 1.4s; }
-/* invisible finger-sized tap target — r=23 keeps ~35px of reach on a phone
-   while staying just clear of the closest pair (veins ↔ nerves, 47.4 apart) */
+/* invisible finger-sized tap target — r=34 gives ~60px of reach on a phone and
+   still clears the closest pair (veins ↔ nerves, 74.4 apart) */
 .bm-hit { fill: transparent; pointer-events: all; }
 .bm-node:focus { outline: none; }
 .bm-node:focus-visible .bm-ring { stroke: #fff; stroke-width: 2.2; }
@@ -1092,7 +1116,7 @@ body.nav-locked .mobile-call { display: none !important; }
   .reveal { opacity: 1; transform: none; }
   .h-rise { animation: none; opacity: 1; }
   .hero-scene { animation: none; }
-  .fig-lines .fl { stroke-dashoffset: 0; animation: none !important; }
+  .fig-bones > *, .fig-bones .scap, .fig-bones .cart, .fig-bones .hair, .fig-bones .socket { opacity: 1; transform: none; animation: none !important; }
   .bm-node { opacity: 1; transition: none; }
   .figure-scan, .figure-orbit, .scene-birds, .scene-swells, .scene-sparkles, .scene-rollers, .scene-wash { display: none; }
   .marquee-track { animation: none; flex-wrap: wrap; width: auto; }

@@ -1178,143 +1178,52 @@ def svc_name(slug):
 # The hero anatomy figure — the moving centerpiece of the homepage
 # ---------------------------------------------------------------------------
 
+from figure import (VB_W, VB_H, CX, SHOULDER_Y, SHOULDER_DX, ELBOW_Y, ELBOW_DX,
+                    WRIST_Y, WRIST_DX, HIP_Y, HIP_DX, KNEE_Y, KNEE_DX, ANKLE_Y, ANKLE_DX,
+                    RIB_BOT, skeleton_svg, defs as figure_defs)
+
+# Joint hotspots. Coordinates come from figure.py's landmarks so a hotspot can
+# never drift off the bone it points at.
 FIGURE_NODES = [
     # key, x, y, clinical label, href, blurb, label side
-    ("shoulder", 292, 168, "Shoulder", "conditions/shoulder-pain.html",
+    ("shoulder", CX + SHOULDER_DX, SHOULDER_Y + 6, "Shoulder", "conditions/shoulder-pain.html",
      "Rotator cuff, arthritis & sports injuries — fellowship-trained shoulder care.", "r"),
-    ("elbow", 302, 308, "Elbow", "conditions/tendon-ligament-injuries.html",
+    ("elbow", CX + ELBOW_DX, ELBOW_Y, "Elbow", "conditions/tendon-ligament-injuries.html",
      "Tennis elbow & stubborn tendinopathy — shockwave, PRP & guided loading.", "r"),
-    ("wrist", 144, 398, "Wrist", "services/orthopedic-sports-medicine.html",
+    ("wrist", CX - WRIST_DX, WRIST_Y + 4, "Wrist", "services/orthopedic-sports-medicine.html",
      "Hand & wrist sprains, fractures & overuse — precise orthopedic evaluation.", "l"),
-    ("spine", 230, 300, "Spine", "services/regenerative-medicine-orthobiologics.html",
+    ("spine", CX, RIB_BOT + 34, "Spine", "services/regenerative-medicine-orthobiologics.html",
      "PRP, cellular & peptide therapies that help the body repair itself.", "l"),
-    ("hip", 264, 398, "Hip", "conditions/hip-pain.html",
+    ("hip", CX + HIP_DX, HIP_Y, "Hip", "conditions/hip-pain.html",
      "Precise diagnosis for arthritis, bursitis & tendon problems.", "r"),
-    ("knee", 207, 560, "Knee", "conditions/knee-pain.html",
+    ("knee", CX - KNEE_DX, KNEE_Y + 10, "Knee", "conditions/knee-pain.html",
      "From PRP to the MISHA shock absorber to Mako robotic replacement.", "l"),
-    ("veins", 253, 646, "Veins", "conditions/varicose-spider-veins.html",
+    ("veins", CX + 30, KNEE_Y + 78, "Veins", "conditions/varicose-spider-veins.html",
      "Ultrasound-guided ablation & sclerotherapy for healthier legs.", "r"),
-    ("nerves", 211, 668, "Nerves", "conditions/peripheral-neuropathy.html",
+    ("nerves", CX - 30, KNEE_Y + 122, "Nerves", "conditions/peripheral-neuropathy.html",
      "The Neuropathy Restoration Program — burning & numbness at the root.", "l"),
-    ("ankle", 248, 720, "Ankle & Foot", "conditions/foot-ankle-pain.html",
+    ("ankle", CX + ANKLE_DX, ANKLE_Y + 4, "Ankle & Foot", "conditions/foot-ankle-pain.html",
      "Board-certified foot & ankle surgery, orthotics & heel pain relief.", "r"),
 ]
 
 
-def _capsule(x, y):
-    """Articulated joint capsule: faint outer ring + condyle dot."""
-    return (f'<circle class="fl bone cap-o" pathLength="1" cx="{x}" cy="{y}" r="7"/>'
-            f'<circle class="fl bone cap-i" pathLength="1" cx="{x}" cy="{y}" r="2.8"/>')
-
-
-def _bone(x1, y1, x2, y2, we, ws):
-    """Contoured long bone: flared epiphyses, waisted shaft — closed outline."""
-    dx, dy = x2 - x1, y2 - y1
-    L = math.hypot(dx, dy)
-    px, py = -dy / L, dx / L
-
-    def P(t, w):
-        return (x1 + dx * t + px * w, y1 + dy * t + py * w)
-
-    f = lambda pt: f"{pt[0]:.1f} {pt[1]:.1f}"
-    d = (f"M {f(P(0, we))} C {f(P(.09, we * .8))} {f(P(.13, ws))} {f(P(.2, ws))} "
-         f"L {f(P(.8, ws))} C {f(P(.87, ws))} {f(P(.91, we * .8))} {f(P(1, we))} "
-         f"Q {f(P(1.055, 0))} {f(P(1, -we))} "
-         f"C {f(P(.91, -we * .8))} {f(P(.87, -ws))} {f(P(.8, -ws))} "
-         f"L {f(P(.2, -ws))} C {f(P(.13, -ws))} {f(P(.09, -we * .8))} {f(P(0, -we))} "
-         f"Q {f(P(-.055, 0))} {f(P(0, we))} Z")
-    return f'<path class="fl bone" pathLength="1" d="{d}"/>'
-
-
-def _skeleton():
-    """Anatomical skeleton, ~7.5 heads tall. Center x=230, viewBox 460x780.
-
-    Landmarks (y): crown 32 · chin 134 · shoulders 172 · elbows ~308 ·
-    wrists ~398 · hips 400 · knees 560 · ankles 720 · soles ~747.
-    """
-    P = []
-    # ---- skull: dome, temples, zygomatic notches, maxilla, mandible
-    P.append('<path class="fl bone" pathLength="1" d="M197 74 C197 46 212 32 230 32 '
-             'C248 32 263 46 263 74 C263 85 260 93 255 98 C252 102 249 104 247 107 '
-             'C249 113 247 119 243 123 C240 129 236 133 230 134 '
-             'C224 133 220 129 217 123 C213 119 211 113 213 107 '
-             'C211 104 208 102 205 98 C200 93 197 85 197 74 Z"/>')
-    P.append('<rect class="fl bone faint" pathLength="1" x="209" y="76" width="15" height="11" rx="5"/>')
-    P.append('<rect class="fl bone faint" pathLength="1" x="236" y="76" width="15" height="11" rx="5"/>')
-    P.append('<path class="fl bone faint" pathLength="1" d="M227 95 C226 101 227 105 230 107 C233 105 234 101 233 95 C232 92 228 92 227 95 Z"/>')
-    P.append('<path class="fl bone faint" pathLength="1" d="M220 119 L240 119 M222 126 L238 126 M226 119 L226 126 M230 119 L230 126 M234 119 L234 126"/>')
-    # ---- vertebral column
-    P.append('<path class="fl bone" pathLength="1" d="M230 140 C231 200 229 280 230 358"/>')
-    for i in range(6):
-        y = 145 + i * 5.2
-        P.append(f'<line class="fl bone vert" pathLength="1" x1="{230 - 4.5}" y1="{y:.0f}" x2="{230 + 4.5}" y2="{y:.0f}"/>')
-    for i in range(12):
-        y = 178 + i * 10.6
-        P.append(f'<line class="fl bone vert" pathLength="1" x1="{230 - 6}" y1="{y:.0f}" x2="{230 + 6}" y2="{y:.0f}"/>')
-    for i in range(5):
-        y = 308 + i * 12
-        P.append(f'<line class="fl bone vert" pathLength="1" x1="{230 - 7.5}" y1="{y}" x2="{230 + 7.5}" y2="{y}"/>')
-    # ---- sternum + xiphoid
-    P.append('<path class="fl bone" pathLength="1" d="M230 178 L230 240"/>')
-    P.append('<path class="fl bone faint" pathLength="1" d="M230 240 L230 249"/>')
-    # ---- pubic symphysis detail
-    P.append('<path class="fl bone faint" pathLength="1" d="M227 413 L233 413 M227 417 L233 417"/>')
-    # ---- per-side structures
-    for sgn in (-1, 1):
-        X = lambda dx: 230 + sgn * dx
-        # clavicle + scapular hint (spine + lateral border)
-        P.append(f'<path class="fl bone" pathLength="1" d="M{X(4)} 174 C {X(22)} 168 {X(44)} 164 {X(62)} 166"/>')
-        P.append(f'<path class="fl bone faint" pathLength="1" d="M{X(58)} 173 L {X(66)} 186 L {X(55)} 221"/>')
-        # ribs: 8 tapering pairs
-        for i, w in enumerate([24, 34, 42, 49, 54, 56, 53, 47]):
-            ys = 184 + i * 12
-            if i < 6:
-                P.append(f'<path class="fl bone rib" pathLength="1" d="M{X(3)} {ys} C {X(int(w * .92))} {ys + 2} {X(w)} {ys + 10} {X(w - 7)} {ys + 15} C {X(w - 20)} {ys + 19} {X(14)} {ys + 21} {X(7)} {ys + 19}"/>')
-            else:
-                P.append(f'<path class="fl bone rib" pathLength="1" d="M{X(3)} {ys} C {X(int(w * .92))} {ys + 2} {X(w)} {ys + 10} {X(w - 9)} {ys + 16}"/>')
-        # pelvic girdle: crest, ramus, inner fossa, ischial bump
-        P.append(f'<path class="fl bone" pathLength="1" d="M{X(6)} 356 C {X(26)} 350 {X(42)} 354 {X(50)} 366 C {X(55)} 376 {X(53)} 390 {X(44)} 398"/>')
-        P.append(f'<path class="fl bone" pathLength="1" d="M{X(44)} 398 C {X(38)} 412 {X(26)} 421 {X(12)} 424 C {X(5)} 425 {X(2)} 420 {X(3)} 413"/>')
-        P.append(f'<path class="fl bone faint" pathLength="1" d="M{X(10)} 360 C {X(24)} 355 {X(35)} 359 {X(42)} 368"/>')
-        P.append(f'<path class="fl bone faint" pathLength="1" d="M{X(20)} 423 C {X(17)} 427 {X(12)} 427 {X(9)} 424"/>')
-        # arm: contoured humerus, radius + ulna, suggested hand
-        P.append(_bone(X(63), 178, X(71), 298, 5, 2.2))
-        P.append(_bone(X(69), 318, X(84), 394, 3.4, 1.5))
-        P.append(_bone(X(76), 316, X(88), 392, 3, 1.3))
-        P.append(f'<ellipse class="fl bone faint" pathLength="1" cx="{X(88)}" cy="403" rx="4.5" ry="6"/>')
-        P.append(f'<path class="fl bone faint" pathLength="1" d="M{X(88)} 409 L {X(86)} 424 M{X(88)} 409 L {X(92)} 425 M{X(88)} 409 L {X(96)} 419"/>')
-        # leg: femoral neck, contoured femur, patella, tibia + fibula, foot
-        P.append(f'<path class="fl bone" pathLength="1" d="M{X(33)} 401 C {X(38)} 406 {X(41)} 412 {X(42)} 419"/>')
-        P.append(_bone(X(43), 424, X(24), 548, 5.5, 2.4))
-        P.append(f'<circle class="fl bone faint" pathLength="1" cx="{X(23)}" cy="559" r="4.5"/>')
-        P.append(_bone(X(23), 570, X(18), 710, 4.4, 1.9))
-        P.append(_bone(X(30), 572, X(24), 706, 2.4, 1.1))
-        P.append(f'<path class="fl bone faint" pathLength="1" d="M{X(18)} 726 C {X(15)} 736 {X(19)} 743 {X(28)} 745 L {X(52)} 747 C {X(56)} 747 {X(56)} 743 {X(52)} 741 M{X(44)} 746 L {X(43)} 739 M{X(36)} 745 L {X(35)} 738"/>')
-    # ---- sacrum
-    P.append('<path class="fl bone" pathLength="1" d="M222 362 L230 400 L238 362"/>')
-    # ---- joint capsules
-    for dx, y in [(62, 168), (72, 308), (86, 398), (34, 398), (23, 560), (18, 720)]:
-        P.append(_capsule(230 - dx, y))
-        P.append(_capsule(230 + dx, y))
-    return "\n      ".join(P)
-
-
 def figure_svg(depth=0):
     p = "../" * depth
+    label_l, label_r = 96, VB_W - 96
     nodes = []
     for key, x, y, label, href, blurb, side in FIGURE_NODES:
-        lx = 84 if side == "l" else 376
-        nx = x - 13 if side == "l" else x + 13
+        lx = label_l if side == "l" else label_r
+        nx = x - 15 if side == "l" else x + 15
         anchor = "end" if side == "l" else "start"
         tx = lx - 8 if side == "l" else lx + 8
         nodes.append(f"""<a href="{p}{href}" class="bm-node" data-part="{key}" data-label="{label}" data-blurb="{html.escape(blurb)}" aria-label="{label} — explore care options">
       <line class="bm-leader" x1="{nx}" y1="{y}" x2="{lx}" y2="{y}"/>
       <circle class="bm-leader-tip" cx="{lx}" cy="{y}" r="2"/>
-      <circle class="bm-halo" cx="{x}" cy="{y}" r="16"/>
-      <circle class="bm-ring" cx="{x}" cy="{y}" r="10"/>
-      <circle class="bm-dot" cx="{x}" cy="{y}" r="4"/>
+      <circle class="bm-halo" cx="{x}" cy="{y}" r="17"/>
+      <circle class="bm-ring" cx="{x}" cy="{y}" r="11"/>
+      <circle class="bm-dot" cx="{x}" cy="{y}" r="4.2"/>
       <text class="bm-label" x="{tx}" y="{y + 5}" text-anchor="{anchor}">{label}</text>
-      <circle class="bm-hit" cx="{x}" cy="{y}" r="23"/>
+      <circle class="bm-hit" cx="{x}" cy="{y}" r="34"/>
     </a>""")
     nodes_html = "\n".join(nodes)
     return f"""<div class="figure-stage" aria-label="Interactive map of the body — choose an area to explore care options">
@@ -1322,22 +1231,13 @@ def figure_svg(depth=0):
   <div class="figure-orbit" aria-hidden="true"></div>
   <div class="figure-orbit figure-orbit-2" aria-hidden="true"></div>
   <div class="figure-scan" aria-hidden="true"></div>
-  <svg class="figure-svg" viewBox="0 0 460 780" role="group" aria-label="Areas we treat">
+  <svg class="figure-svg" viewBox="0 0 {VB_W} {VB_H}" role="group" aria-label="Areas we treat">
     <defs>
-      <linearGradient id="boneStroke" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#F7DE8B"/>
-        <stop offset=".5" stop-color="#FDC929"/>
-        <stop offset="1" stop-color="#DFAF2B"/>
-      </linearGradient>
-      <radialGradient id="figGlow" cx=".5" cy=".42" r=".62">
-        <stop offset="0" stop-color="#FDC929" stop-opacity=".12"/>
-        <stop offset=".55" stop-color="#12457F" stop-opacity=".09"/>
-        <stop offset="1" stop-color="#12457F" stop-opacity="0"/>
-      </radialGradient>
+      {figure_defs()}
     </defs>
-    <ellipse cx="230" cy="390" rx="215" ry="372" fill="url(#figGlow)"/>
-    <g class="fig-lines" fill="none" stroke="url(#boneStroke)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
-      {_skeleton()}
+    <ellipse cx="{CX}" cy="{VB_H // 2}" rx="{VB_W // 2 - 12}" ry="{VB_H // 2 - 20}" fill="url(#figGlow)"/>
+    <g class="fig-bones">
+      {skeleton_svg()}
     </g>
     {nodes_html}
   </svg>
