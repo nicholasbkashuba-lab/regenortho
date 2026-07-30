@@ -130,6 +130,141 @@ def _ellipse(cx, cy, rx, ry, cls="bn"):
             f'rx="{_f(rx)}" ry="{_f(ry)}"/>')
 
 
+def _musc_grad(mx, my, nx, ny, w):
+    """Muscle bellies get the same cylindrical treatment as bone, in warm
+    terracotta — the split-figure convention: musculature one side, skeleton the
+    other, so a visitor reads both systems in one glance."""
+    if nx * LIGHT[0] + ny * LIGHT[1] < 0:
+        nx, ny = -nx, -ny
+    gid = _grad_id()
+    _GRADS.append(
+        f'<linearGradient id="{gid}" gradientUnits="userSpaceOnUse" '
+        f'x1="{_f(mx + nx * w * 1.15)}" y1="{_f(my + ny * w * 1.15)}" '
+        f'x2="{_f(mx - nx * w * 1.25)}" y2="{_f(my - ny * w * 1.25)}">'
+        '<stop offset="0" stop-color="#F0B694"/>'
+        '<stop offset=".2" stop-color="#DC8256"/>'
+        '<stop offset=".52" stop-color="#BE5B33"/>'
+        '<stop offset=".82" stop-color="#8A3A1E"/>'
+        '<stop offset="1" stop-color="#A44A28"/>'
+        '</linearGradient>'
+    )
+    return gid
+
+
+def _belly(d, mx, my, nx, ny, w):
+    return f'<path class="ms" fill="url(#{_musc_grad(mx, my, nx, ny, w)})" d="{d}"/>'
+
+
+def _muscles():
+    """Superficial musculature on the figure's LEFT only (viewer's left of the
+    midline). Authored from the same landmarks as the bones so the bellies sit
+    on the right skeleton."""
+    s = -1
+    sx = CX + s * SHOULDER_DX
+    ex = CX + s * ELBOW_DX
+    wx = CX + s * WRIST_DX
+    hx = CX + s * HIP_DX
+    kx = CX + s * KNEE_DX
+    ax = CX + s * ANKLE_DX
+    p = []
+
+    # sternocleidomastoid — a narrow strap, mastoid down to the sternal notch
+    p.append(_belly(
+        f'M{CX - 21},{CHIN - 4} C{CX - 19},{CHIN + 16} {CX - 12},{NECK_BOT + 4} '
+        f'{CX - 5},{SHOULDER_Y - 4} L{CX - 12},{SHOULDER_Y - 2} '
+        f'C{CX - 18},{NECK_BOT + 6} {CX - 26},{CHIN + 18} {CX - 27},{CHIN - 2}Z',
+        CX - 17, CHIN + 20, 1, 0, 5))
+
+    # (no trapezius: it is a posterior muscle, and from the front it only
+    #  produced a bar across the clavicle)
+
+    # deltoid cap
+    p.append(_belly(
+        f'M{_f(sx + 12)},{SHOULDER_Y - 1} C{_f(sx - 11)},{SHOULDER_Y + 4} '
+        f'{_f(sx - 14)},{SHOULDER_Y + 32} {_f(sx - 8)},{SHOULDER_Y + 50} '
+        f'C{_f(sx + 1)},{SHOULDER_Y + 56} {_f(sx + 11)},{SHOULDER_Y + 44} '
+        f'{_f(sx + 13)},{SHOULDER_Y + 20}Z',
+        sx, SHOULDER_Y + 25, 1, 0, 13))
+
+    # pectoralis major — a flat fan from the sternum into the axilla, NOT a dome
+    p.append(_belly(
+        f'M{CX - 5},{RIB_TOP + 10} '
+        f'C{CX - 28},{RIB_TOP + 6} {_f(sx + 16)},{RIB_TOP + 12} {_f(sx + 6)},{RIB_TOP + 30} '
+        f'C{_f(sx + 14)},{RIB_TOP + 44} {CX - 30},{RIB_TOP + 58} {CX - 5},{RIB_TOP + 56}Z',
+        CX - 40, RIB_TOP + 33, 0.25, 1, 17))
+    p.append(f'<path class="mline" d="M{CX - 8},{RIB_TOP + 22} '
+             f'Q{CX - 34},{RIB_TOP + 26} {_f(sx + 12)},{RIB_TOP + 30}"/>')
+
+    # serratus anterior — the finger-like slips over the lateral ribs
+    for i in range(4):
+        yy = RIB_TOP + 62 + i * 12
+        p.append(f'<path class="mline" d="M{CX - 52},{_f(yy)} L{CX - 30},{_f(yy - 5)}"/>')
+
+    # biceps brachii
+    p.append(_belly(
+        f'M{_f(sx - 6)},{SHOULDER_Y + 52} C{_f(sx - 14)},{SHOULDER_Y + 94} '
+        f'{_f(ex - 10)},{ELBOW_Y - 60} {_f(ex - 5)},{ELBOW_Y - 18} '
+        f'L{_f(ex + 5)},{ELBOW_Y - 20} C{_f(ex + 6)},{ELBOW_Y - 64} '
+        f'{_f(sx + 8)},{SHOULDER_Y + 90} {_f(sx + 6)},{SHOULDER_Y + 54}Z',
+        (sx + ex) / 2, (SHOULDER_Y + ELBOW_Y) / 2, 1, 0, 11))
+
+    # forearm flexor mass
+    p.append(_belly(
+        f'M{_f(ex - 8)},{ELBOW_Y + 4} C{_f(ex - 14)},{ELBOW_Y + 46} '
+        f'{_f(wx - 8)},{WRIST_Y - 54} {_f(wx - 4)},{WRIST_Y - 20} '
+        f'L{_f(wx + 5)},{WRIST_Y - 22} C{_f(wx + 4)},{WRIST_Y - 60} '
+        f'{_f(ex + 8)},{ELBOW_Y + 44} {_f(ex + 6)},{ELBOW_Y + 6}Z',
+        (ex + wx) / 2, (ELBOW_Y + WRIST_Y) / 2, 1, 0, 10))
+
+    # rectus abdominis — a vertical strip, xiphoid to pubis, clear of the pelvis
+    ab_top, ab_bot = RIB_BOT - 14, PELVIS_TOP + 44
+    p.append(_belly(
+        f'M{CX - 5},{_f(ab_top)} L{CX - 23},{_f(ab_top + 6)} '
+        f'C{CX - 26},{_f(ab_top + 40)} {CX - 22},{_f(ab_bot - 14)} {CX - 12},{_f(ab_bot)} '
+        f'L{CX - 5},{_f(ab_bot)}Z',
+        CX - 15, (ab_top + ab_bot) / 2, 1, 0, 10))
+    for i in range(3):
+        yy = ab_top + 18 + i * 21
+        p.append(f'<path class="mline" d="M{CX - 6},{_f(yy)} L{CX - 24},{_f(yy + 2)}"/>')
+    p.append(f'<path class="mline" d="M{CX - 5},{_f(ab_top + 4)} L{CX - 5},{_f(ab_bot - 2)}"/>')
+
+    # external oblique filling the flank between the lower ribs and the crest
+    p.append(_belly(
+        f'M{CX - 25},{_f(ab_top + 4)} '
+        f'C{CX - 44},{_f(ab_top + 18)} {CX - 48},{_f(ab_top + 52)} {CX - 40},{_f(ab_bot - 24)} '
+        f'L{CX - 24},{_f(ab_bot - 30)} '
+        f'C{CX - 28},{_f(ab_top + 52)} {CX - 27},{_f(ab_top + 22)} {CX - 25},{_f(ab_top + 4)}Z',
+        CX - 36, (ab_top + ab_bot) / 2, 1, 0, 11))
+
+    # quadriceps — vastus lateralis + rectus femoris
+    p.append(_belly(
+        f'M{_f(hx - 16)},{HIP_Y + 16} C{_f(hx - 26)},{HIP_Y + 70} '
+        f'{_f(kx - 16)},{KNEE_Y - 80} {_f(kx - 9)},{KNEE_Y - 26} '
+        f'L{_f(kx + 10)},{KNEE_Y - 28} C{_f(kx + 8)},{KNEE_Y - 86} '
+        f'{_f(hx + 6)},{HIP_Y + 74} {_f(hx + 4)},{HIP_Y + 18}Z',
+        (hx + kx) / 2 - 4, (HIP_Y + KNEE_Y) / 2, 1, 0, 18))
+    p.append(f'<path class="mline" d="M{_f(hx - 4)},{HIP_Y + 30} '
+             f'Q{_f((hx + kx) / 2 - 6)},{_f((HIP_Y + KNEE_Y) / 2)} {_f(kx - 1)},{KNEE_Y - 32}"/>')
+
+    # gastrocnemius
+    p.append(_belly(
+        f'M{_f(kx - 12)},{KNEE_Y + 26} C{_f(kx - 20)},{KNEE_Y + 74} '
+        f'{_f(ax - 14)},{ANKLE_Y - 92} {_f(ax - 7)},{ANKLE_Y - 58} '
+        f'L{_f(ax + 3)},{ANKLE_Y - 60} C{_f(ax + 2)},{ANKLE_Y - 100} '
+        f'{_f(kx + 6)},{KNEE_Y + 70} {_f(kx + 4)},{KNEE_Y + 28}Z',
+        (kx + ax) / 2 - 4, (KNEE_Y + ANKLE_Y) / 2 - 10, 1, 0, 13))
+
+    # tibialis anterior
+    p.append(_belly(
+        f'M{_f(kx + 6)},{KNEE_Y + 30} C{_f(kx + 12)},{KNEE_Y + 76} '
+        f'{_f(ax + 9)},{ANKLE_Y - 70} {_f(ax + 7)},{ANKLE_Y - 30} '
+        f'L{_f(ax + 1)},{ANKLE_Y - 30} C{_f(ax + 2)},{ANKLE_Y - 74} '
+        f'{_f(kx + 3)},{KNEE_Y + 74} {_f(kx + 1)},{KNEE_Y + 32}Z',
+        (kx + ax) / 2 + 5, (KNEE_Y + ANKLE_Y) / 2 - 8, 1, 0, 6))
+
+    return p
+
+
 def _dome(d, cx, cy, r):
     """Shade a hand-authored path as a dome — skull vault, mandible."""
     return f'<path class="bn" fill="url(#{_sphere_grad(cx, cy, r)})" d="{d}"/>'
@@ -393,7 +528,7 @@ def skeleton_svg():
     _GID[0] = 0
     # order IS the depth: scapulae behind the cage, clavicles in front of it
     parts = (_scapulae() + _spine() + _ribcage() + _clavicles() + _pelvis()
-             + _arms() + _legs() + _skull())
+             + _arms() + _legs() + _muscles() + _skull())
     return "\n      ".join(parts)
 
 

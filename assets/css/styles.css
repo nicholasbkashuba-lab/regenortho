@@ -456,7 +456,8 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
    and rise into place when the section enters view. */
 .fig-bones { filter: url(#boneBloom); }
 .fig-bones .bn, .fig-bones .rib, .fig-bones .clav, .fig-bones .scap,
-.fig-bones .cart, .fig-bones .digit, .fig-bones .hair, .fig-bones .socket {
+.fig-bones .cart, .fig-bones .digit, .fig-bones .hair, .fig-bones .socket,
+  .fig-bones .ms, .fig-bones .mline {
   opacity: 0; transform: translateY(9px); transform-box: fill-box; transform-origin: center;
 }
 .figure-stage.is-live .fig-bones > * { animation: boneIn .9s var(--ease) forwards; }
@@ -469,6 +470,12 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
 .figure-stage.is-live .fig-bones > :nth-child(11n) { animation-delay: .58s; }
 
 .fig-bones .bn { stroke: #7E5C10; stroke-width: .6; stroke-linejoin: round; }
+.fig-bones .ms { stroke: #6B2A14; stroke-width: .6; stroke-linejoin: round; opacity: 0; }
+.figure-stage.is-live .fig-bones .ms { animation-name: mscIn; }
+@keyframes mscIn { to { opacity: .94; transform: none; } }
+.fig-bones .mline { fill: none; stroke: #6B2A14; stroke-width: .9; stroke-linecap: round; opacity: 0; }
+.figure-stage.is-live .fig-bones .mline { animation-name: mlineIn; }
+@keyframes mlineIn { to { opacity: .45; transform: none; } }
 .fig-bones .proc { fill: #B98F2C; stroke: #7E5C10; stroke-width: .5; opacity: 0; }
 .figure-stage.is-live .fig-bones .proc { animation-name: procIn; }
 @keyframes procIn { to { opacity: .8; transform: none; } }
