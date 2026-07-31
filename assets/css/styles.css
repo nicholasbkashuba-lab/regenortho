@@ -108,6 +108,11 @@ a, button, input, select, textarea, summary, [tabindex] { scroll-margin-top: cal
 .btn-navy { background: var(--navy-800); color: #fff; }
 .btn-navy:hover { background: var(--navy-700); color: #fff; }
 .btn-ghost-light { border-color: rgba(255, 255, 255, .45); color: #fff; background: rgba(255, 255, 255, .04); }
+/* Hero's second CTA. A translucent white outline disappears over bright surf;
+   solid deep teal holds its own against sand, water and sky alike. */
+.btn-teal { background: #0E4A55; color: #fff; border-color: #0E4A55;
+  box-shadow: 0 14px 30px -14px rgba(6, 38, 44, .7); }
+.btn-teal:hover { background: #14606E; border-color: #14606E; color: #fff; }
 .btn-ghost-light:hover { border-color: var(--gold); color: var(--gold); }
 .btn-sm { padding: .55rem 1.1rem; font-size: .85rem; }
 .btn-block { width: 100%; }
@@ -193,7 +198,21 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
 .hero-video-scrim { position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(90deg, rgba(4, 16, 31, .34) 0%, rgba(4, 16, 31, .16) 42%, transparent 66%); }
 @media (max-width: 767px) {
-  .hero-video-scrim { background: linear-gradient(180deg, rgba(4, 16, 31, .2) 0%, rgba(4, 16, 31, .16) 55%, rgba(4, 16, 31, .3) 100%); }
+  /* Legibility without a panel: weight the scrim to the TOP third where the
+     copy sits and let it clear by ~62%, so the surf and sand stay bright.
+     A gradient has no edge to read as a box. */
+  .hero-video-scrim { background: linear-gradient(180deg,
+    rgba(4, 16, 31, .66) 0%, rgba(4, 16, 31, .5) 28%, rgba(4, 16, 31, .26) 48%,
+    rgba(4, 16, 31, .07) 62%, rgba(4, 16, 31, .34) 100%); }
+
+  .hero-copy { text-align: center; margin-inline: auto; max-width: 34ch;
+    text-shadow: 0 1px 2px rgba(4, 16, 31, .8), 0 2px 18px rgba(4, 16, 31, .75); }
+  .hero-copy h1 { max-width: none; margin-inline: auto; }
+  .hero .lede { margin-inline: auto; }
+  .hero-cta-row { justify-content: center; }
+  .hero .hero-eyebrow::before { display: none; }   /* only reads as a lead-in when left-aligned */
+  .hero-stats { justify-content: center; margin-inline: auto; text-align: center; }
+  .hero-stats div:last-child { grid-column: 1 / -1; }
 }
 /* keep the copy above the video */
 .hero-inner, .hero-marquee { position: relative; z-index: 2; }
@@ -704,9 +723,16 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
 
 /* ------------------------------ social rail ------------------------------ */
 
-.social-rail { overflow: hidden; margin: 0 auto; padding: .5rem 0 1.4rem;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%); }
+/* Edge fade is an OVERLAY, not a mask. -webkit-mask-image over a child that
+   carries will-change:transform (plus per-tile rotate) makes the whole rail
+   render blank on iOS Safari — a compositing bug, and the reason the feed was
+   invisible on iPhone while fine in Chromium. */
+.social-rail { position: relative; overflow: hidden; margin: 0 auto; padding: .5rem 0 1.4rem; }
+.social-rail::before, .social-rail::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 11%; z-index: 2; pointer-events: none;
+}
+.social-rail::before { left: 0; background: linear-gradient(90deg, var(--porcelain), transparent); }
+.social-rail::after { right: 0; background: linear-gradient(270deg, var(--porcelain), transparent); }
 .social-track { display: flex; align-items: center; width: max-content; will-change: transform; animation: marquee 46s linear infinite; }
 .social-track > * { margin-right: 1.1rem; flex-shrink: 0; }
 .social-rail:hover .social-track, .social-rail:focus-within .social-track { animation-play-state: paused; }
@@ -715,6 +741,19 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
 .social-tile:nth-child(even) { transform: rotate(.6deg); }
 .social-tile img { height: 100%; width: auto; display: block; transition: transform .5s var(--ease); }
 .social-tile:hover img { transform: scale(1.07); }
+
+/* Phones swipe the rail instead of watching it drift. Native scrolling also
+   makes loading="lazy" work — Safari never updates the lazy viewport for
+   content moved by a transform, so animated tiles simply never loaded. */
+@media (max-width: 767px) {
+  .social-rail { overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-inline: 1.1rem; }
+  .social-rail::-webkit-scrollbar { display: none; }
+  .social-rail::before, .social-rail::after { display: none; }
+  .social-track { animation: none; will-change: auto; }
+  .social-track > * { scroll-snap-align: center; margin-right: .75rem; }
+  .social-tile { height: 62vh; max-height: 420px; }
+}
 
 /* ------------------------------ associations ----------------------------- */
 
