@@ -1327,11 +1327,12 @@ def build_home():
       <video class="hero-video" autoplay muted loop playsinline preload="none"
              poster="assets/video/juno-poster.jpg?v={asset_v('assets/video/juno-poster.jpg')}"
              data-hero-video
-             data-mp4-4k="assets/video/juno-4k.mp4?v=1"
-             data-mp4-hd="assets/video/juno-hd.mp4?v=1"
-             data-webm-hd="assets/video/juno-hd.webm?v=1"
-             data-mp4-mobile="assets/video/juno-mobile.mp4?v=1"
-             data-webm-mobile="assets/video/juno-mobile.webm?v=1"></video>
+             data-mp4-max="assets/video/juno-max.mp4?v={asset_v('assets/video/juno-max.mp4')}"
+             data-mp4-hd="assets/video/juno-hd.mp4?v={asset_v('assets/video/juno-hd.mp4')}"
+             data-webm-hd="assets/video/juno-hd.webm?v={asset_v('assets/video/juno-hd.webm')}"
+             data-mp4-mobile="assets/video/juno-mobile.mp4?v={asset_v('assets/video/juno-mobile.mp4')}"
+             data-webm-mobile="assets/video/juno-mobile.webm?v={asset_v('assets/video/juno-mobile.webm')}"></video>
+      <div class="hero-video-scrim"></div>
     </div>
     <div class="scene-sky"></div>
     <div class="scene-haze-violet"></div>

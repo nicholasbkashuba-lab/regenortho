@@ -112,6 +112,15 @@ To deploy:
 To hand the whole thing to the practice, transfer this repo to their GitHub account and
 re-import it under their own Vercel account — nothing in the code needs to change.
 
+## Hero video
+
+The homepage hero plays a drone shot of the Juno Beach Pier (source: Juno.MP4 in
+the practice's Dropbox, 2688×1512 native — not true 4K, so nothing is upscaled).
+Web renditions live in `assets/video/` and were encoded from the master on a CI
+runner. To re-encode, see the ladder documented in CLAUDE.md and keep: single
+generation from the master, bt709 tags, faststart, no audio, and the JS one-pair
+selection in `main.js` (phones must never download the desktop files).
+
 ## Search, AI answers & Bing
 
 Beyond the usual on-page SEO, the build emits three things that are easy to lose

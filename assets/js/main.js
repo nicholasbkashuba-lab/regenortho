@@ -73,14 +73,13 @@
       heroVid.removeAttribute("autoplay");   // poster only
     } else {
       var isMobile = window.matchMedia("(max-width: 767px)").matches;
-      var want4k = !isMobile &&
-                   window.matchMedia("(min-width: 2000px)").matches &&
-                   (window.devicePixelRatio || 1) * window.innerWidth >= 2560;
+      var wantMax = !isMobile &&
+                    (window.devicePixelRatio || 1) * window.innerWidth >= 2200;
       var mp4 = isMobile ? heroVid.getAttribute("data-mp4-mobile")
-              : want4k ? heroVid.getAttribute("data-mp4-4k")
+              : wantMax ? heroVid.getAttribute("data-mp4-max")
               : heroVid.getAttribute("data-mp4-hd");
       var webm = isMobile ? heroVid.getAttribute("data-webm-mobile")
-               : want4k ? null                    // no 4K webm — mp4 covers it
+               : wantMax ? heroVid.getAttribute("data-webm-hd")   // VP9 fallback for max tier too
                : heroVid.getAttribute("data-webm-hd");
       var s1 = document.createElement("source");
       s1.src = mp4; s1.type = "video/mp4";

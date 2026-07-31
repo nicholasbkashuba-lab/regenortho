@@ -187,6 +187,14 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
    fallback while the poster/first frame loads and wherever autoplay is vetoed */
 .hero-video-slot { z-index: 1; }
 .hero-video-slot video { width: 100%; height: 100%; object-fit: cover; }
+/* Legibility scrim: the footage pans across white surf and bright sand, and the
+   pale lede text disappears against it. Weighted to the copy side on desktop,
+   vertical on phones. Kept light — the client asked for a bright hero. */
+.hero-video-scrim { position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(90deg, rgba(4, 16, 31, .55) 0%, rgba(4, 16, 31, .3) 40%, rgba(4, 16, 31, .02) 68%); }
+@media (max-width: 767px) {
+  .hero-video-scrim { background: linear-gradient(180deg, rgba(4, 16, 31, .38) 0%, rgba(4, 16, 31, .34) 55%, rgba(4, 16, 31, .5) 100%); }
+}
 /* keep the copy above the video */
 .hero-inner, .hero-marquee { position: relative; z-index: 2; }
 .scene-sky { position: absolute; inset: 0;

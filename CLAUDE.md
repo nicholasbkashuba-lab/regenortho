@@ -70,6 +70,26 @@ Two traps that cost real time here:
 - The arm masses deliberately overlap the trunk. Drawn clear of it, the gap shows
   background through the lit figure as a hard black void.
 
+## Hero video (do not regress)
+Source of truth: "Juno.MP4" in the Dropbox /kashuba folder — 2688×1512@59.94,
+15.65s drone shot of the Juno Beach Pier. That is the camera's native resolution:
+there is NO true-4K master, so never upscale past 2688. Renditions in assets/video/
+(all encoded on a GitHub Actions runner from the master, single generation, bt709,
+-movflags +faststart, no audio):
+  juno-max.mp4    2688×1512 crf26  ~18.5MB — screens resolving ≥2200 effective px
+  juno-hd.mp4     1920×1080 crf23  ~14MB   — desktop default
+  juno-hd.webm    2560×1440 VP9    ~26MB   — desktop fallback for no-H.264 browsers
+  juno-mobile.mp4 1280×720  crf30  ~3.9MB  — phones (<768px)
+  juno-mobile.webm 1280×720 VP9    ~5.2MB
+  juno-poster.jpg 1600×900 q80     ~186KB  — preloaded poster
+The <video> ships with NO <source> children and preload="none"; main.js attaches
+exactly ONE rendition pair via matchMedia, mp4 before webm. Nothing downloads under
+prefers-reduced-motion or Save-Data (poster only). .hero-video-scrim keeps the pale
+lede legible over white surf — weighted left on desktop, vertical on phones; don't
+remove it, and keep it light (the client asked for a bright hero). The CSS coastline
+scene remains underneath as the no-video fallback. asset_v() tolerates missing files
+("pending") so builds work before renditions land.
+
 ## SEO — keep maximized
 - Org node: MedicalClinic+MedicalBusiness @id https://www.regenorthopb.com/#organization.
   Per page: Physician (providers), MedicalTherapy (services), MedicalCondition (conditions),
