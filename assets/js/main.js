@@ -60,6 +60,46 @@
 
   mobileMQ.addEventListener("change", closeMenu);
 
+  /* ---------------------------------------------------- hero video pick */
+  /* The <video> ships with NO <source> children. Exactly one rendition pair is
+     attached here, so phones never fetch the 4K/HD URLs, and nothing downloads
+     at all under reduced-motion or Save-Data. 4K only goes to screens that can
+     actually resolve it AND aren't on a metered connection. */
+  var heroVid = document.querySelector("[data-hero-video]");
+  if (heroVid) {
+    var conn = navigator.connection || {};
+    var saveData = !!conn.saveData || /(^|\b)2g/.test(conn.effectiveType || "");
+    if (reduceMotion || saveData) {
+      heroVid.removeAttribute("autoplay");   // poster only
+    } else {
+      var isMobile = window.matchMedia("(max-width: 767px)").matches;
+      var want4k = !isMobile &&
+                   window.matchMedia("(min-width: 2000px)").matches &&
+                   (window.devicePixelRatio || 1) * window.innerWidth >= 2560;
+      var mp4 = isMobile ? heroVid.getAttribute("data-mp4-mobile")
+              : want4k ? heroVid.getAttribute("data-mp4-4k")
+              : heroVid.getAttribute("data-mp4-hd");
+      var webm = isMobile ? heroVid.getAttribute("data-webm-mobile")
+               : want4k ? null                    // no 4K webm — mp4 covers it
+               : heroVid.getAttribute("data-webm-hd");
+      var s1 = document.createElement("source");
+      s1.src = mp4; s1.type = "video/mp4";
+      heroVid.appendChild(s1);
+      if (webm) {
+        var s2 = document.createElement("source");
+        s2.src = webm; s2.type = "video/webm";
+        heroVid.appendChild(s2);
+      }
+      heroVid.load();
+      var tryPlay = function () {
+        var pr = heroVid.play();
+        if (pr && pr.catch) pr.catch(function () { /* autoplay veto → poster stays */ });
+      };
+      if (heroVid.readyState >= 2) tryPlay();
+      else heroVid.addEventListener("canplay", tryPlay, { once: true });
+    }
+  }
+
   /* -------------------------------------------- header on scroll only */
   var header = document.querySelector(".site-header");
   if (header) {

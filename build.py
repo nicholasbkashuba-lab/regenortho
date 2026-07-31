@@ -52,6 +52,8 @@ def asset_v(path):
     """Content-hash version for an asset path relative to regenortho/."""
     if path not in _v_cache:
         full = os.path.join(ROOT, path)
+        if not os.path.exists(full):
+            return "pending"     # asset lands out-of-band (e.g. video renditions)
         with open(full, "rb") as f:
             _v_cache[path] = hashlib.md5(f.read()).hexdigest()[:8]
     return _v_cache[path]
@@ -1322,11 +1324,14 @@ def build_home():
 <section class="hero" id="hero">
   <div class="hero-scene" aria-hidden="true">
     <div class="hero-video-slot">
-      <!-- Video drop-in: place the file, then uncomment —
       <video class="hero-video" autoplay muted loop playsinline preload="none"
-             poster="assets/video/hero-poster.jpg">
-        <source src="assets/video/hero-beach.mp4" type="video/mp4">
-      </video> -->
+             poster="assets/video/juno-poster.jpg?v={asset_v('assets/video/juno-poster.jpg')}"
+             data-hero-video
+             data-mp4-4k="assets/video/juno-4k.mp4?v=1"
+             data-mp4-hd="assets/video/juno-hd.mp4?v=1"
+             data-webm-hd="assets/video/juno-hd.webm?v=1"
+             data-mp4-mobile="assets/video/juno-mobile.mp4?v=1"
+             data-webm-mobile="assets/video/juno-mobile.webm?v=1"></video>
     </div>
     <div class="scene-sky"></div>
     <div class="scene-haze-violet"></div>
@@ -1815,7 +1820,8 @@ CEDENO_BIO = [
 ]
 
 
-def physician_schema(name, photo, title_str, url_path, same_as=None, schema_type="Physician"):
+def physician_schema(name, photo, title_str, url_path, same_as=None, schema_type="Physician",
+                     specialty=None):
     obj = {
         "@context": "https://schema.org",
         "@type": schema_type,
@@ -1833,9 +1839,17 @@ def physician_schema(name, photo, title_str, url_path, same_as=None, schema_type
         },
         "telephone": "+1-833-783-6561",
     }
+    if specialty:
+        obj["medicalSpecialty"] = specialty      # required for Physician rich results
     if same_as:
         obj["sameAs"] = same_as
     return extra_ld(obj)
+
+
+_PROVIDER_SPECIALTY = {
+    "dr-marc-matarazzo": ["Orthopedic surgery", "Sports medicine"],
+    "dr-orlando-cedeno": ["Podiatric medicine", "Foot and ankle surgery", "Phlebology"],
+}
 
 
 def provider_page(slug, name, role, photo, bio_paras, highlights, title, desc, focus_links,
@@ -1890,7 +1904,8 @@ def provider_page(slug, name, role, photo, bio_paras, highlights, title, desc, f
 </main>
 {footer(d)}"""
     schema = (
-        physician_schema(name, photo, role, f"providers/{slug}.html", schema_type=schema_type)
+        physician_schema(name, photo, role, f"providers/{slug}.html", schema_type=schema_type,
+                         specialty=_PROVIDER_SPECIALTY.get(slug))
         + breadcrumb_schema([("", "Home"), ("about.html", "About"), (f"providers/{slug}.html", name)])
     )
     page = head(title, desc, depth=d, canonical=f"providers/{slug}.html",

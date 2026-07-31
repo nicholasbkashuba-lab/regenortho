@@ -183,7 +183,12 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
 .hero-scene { position: absolute; inset: 0; animation: sceneIn 1.8s var(--ease) both; }
 @keyframes sceneIn { from { opacity: 0; } }
 .hero-video-slot, .hero-video-slot video { position: absolute; inset: 0; }
+/* z-index 1 lifts the video above the CSS scene; the scene stays as the
+   fallback while the poster/first frame loads and wherever autoplay is vetoed */
+.hero-video-slot { z-index: 1; }
 .hero-video-slot video { width: 100%; height: 100%; object-fit: cover; }
+/* keep the copy above the video */
+.hero-inner, .hero-marquee { position: relative; z-index: 2; }
 .scene-sky { position: absolute; inset: 0;
   background: linear-gradient(180deg,
     #0E3060 0%, #1A4478 16%, #2C5C94 32%, #57679E 42%, #8A6A94 50%,
