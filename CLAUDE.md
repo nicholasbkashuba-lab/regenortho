@@ -72,23 +72,34 @@ Two traps that cost real time here:
 
 ## Hero video (do not regress)
 Source of truth: "Juno.MP4" in the Dropbox /kashuba folder — 2688×1512@59.94,
-15.65s drone shot of the Juno Beach Pier. That is the camera's native resolution:
-there is NO true-4K master, so never upscale past 2688. Renditions in assets/video/
-(all encoded on a GitHub Actions runner from the master, single generation, bt709,
--movflags +faststart, no audio):
-  juno-max.mp4    2688×1512 crf26  ~18.5MB — screens resolving ≥2200 effective px
-  juno-hd.mp4     1920×1080 crf23  ~14MB   — desktop default
-  juno-hd.webm    2560×1440 VP9    ~26MB   — desktop fallback for no-H.264 browsers
-  juno-mobile.mp4 1280×720  crf30  ~3.9MB  — phones (<768px)
-  juno-mobile.webm 1280×720 VP9    ~5.2MB
-  juno-poster.jpg 1600×900 q80     ~186KB  — preloaded poster
+15.65s drone shot of the Juno Beach Pier. Native camera resolution: there is NO
+true-4K master; never upscale past 2688. ALWAYS re-encode from this master via a
+GitHub Actions relay (sandbox can't reach Dropbox and has no ffmpeg).
+
+Pipeline (per-frame luma analysis drove every number): the drone's auto-exposure
+dips to Y=110 while the dark pier fills the frame (7–8.5s) then snaps +24 at
+9.0s; the railing exits frame by 10.0s; 10.0–15.65s is stable (Y 134–140). So
+the loop uses ONLY the post-pier glide: A=trim 10.0:15.65, B=trim 9.55:10.1,
+both setpts/0.8 then fps=30 (xfade needs CFR), xfade 0.5s at offset 6.5625 →
+7.25s seamless loop whose wrap lands 0.1s from restart. Grade baked in:
+eq=gamma=1.12:brightness=0.02:saturation=1.12 (gamma-led — doesn't clip sand).
+Encode: libx264 veryslow, -g 60, faststart, bt709 tags, no audio.
+
+Renditions in assets/video/ (all crf/preset as noted, single generation):
+  juno-max.mp4     2688×1512 crf20  ~17.6MB — screens ≥2200 effective px
+  juno-hd.mp4      1920×1080 crf20  ~8.9MB  — desktop default
+  juno-hd.webm     2560×1440 VP9    ~9.7MB  — no-H.264 fallback
+  juno-mobile.mp4  1280×720  crf24  ~2.3MB  — phones (<768px)
+  juno-mobile.webm 1280×720  VP9    ~2MB
+  juno-poster.jpg  1600×900 from the GRADED loop, so it matches frame one
 The <video> ships with NO <source> children and preload="none"; main.js attaches
-exactly ONE rendition pair via matchMedia, mp4 before webm. Nothing downloads under
-prefers-reduced-motion or Save-Data (poster only). .hero-video-scrim keeps the pale
-lede legible over white surf — weighted left on desktop, vertical on phones; don't
-remove it, and keep it light (the client asked for a bright hero). The CSS coastline
-scene remains underneath as the no-video fallback. asset_v() tolerates missing files
-("pending") so builds work before renditions land.
+ONE rendition pair via matchMedia, mp4 before webm; nothing downloads under
+reduced-motion or Save-Data. .hero-video-scrim stays LIGHT (desktop .34→0 across,
+mobile .2/.16/.3) — the client asked twice for a bright hero; legibility comes
+from the text shadow. The marquee under the hero keeps its flat rgba(4,16,31,.72)
+band (flat fill, NOT backdrop-filter — compositing cost over playing video). The
+CSS coastline scene stays underneath as the no-video fallback. asset_v() returns
+"pending" for missing files so builds work before renditions land.
 
 ## SEO — keep maximized
 - Org node: MedicalClinic+MedicalBusiness @id https://www.regenorthopb.com/#organization.
