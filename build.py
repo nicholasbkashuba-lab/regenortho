@@ -1353,7 +1353,6 @@ def build_home():
     <div class="scene-sparkles"></div>
     <div class="scene-wash"></div>
     <div class="scene-shore"></div>
-    <div class="scene-fronds"></div>
     <div class="scene-vignette"></div>
     <div class="scene-shimmer"></div>
     <div class="hero-scrim"></div>

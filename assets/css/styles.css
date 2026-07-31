@@ -386,12 +386,7 @@ body.nav-locked .site-header { -webkit-backdrop-filter: none; backdrop-filter: n
   animation: foamDrift 26s linear infinite alternate; }
 @keyframes foamDrift { to { transform: translateX(-120px); } }
 
-/* silhouetted palm fronds framing the top-right corner */
-.scene-fronds { position: absolute; top: -2%; right: -3%; width: 40vmin; height: 32vmin; z-index: 3;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 460 340'%3E%3Cg stroke='%23020D1C' fill='none' stroke-linecap='round'%3E%3Cpath d='M452 8 C370 34 290 92 236 168' stroke-width='6'/%3E%3Cpath d='M420 22 C400 44 384 70 378 92' stroke-width='8'/%3E%3Cpath d='M390 38 C372 62 360 88 356 112' stroke-width='8'/%3E%3Cpath d='M362 58 C346 84 336 110 334 132' stroke-width='8'/%3E%3Cpath d='M336 80 C322 106 314 132 314 154' stroke-width='8'/%3E%3Cpath d='M312 104 C300 130 294 156 296 178' stroke-width='7'/%3E%3Cpath d='M290 128 C280 154 276 180 280 202' stroke-width='7'/%3E%3Cpath d='M268 152 C260 178 258 204 264 226' stroke-width='7'/%3E%3Cpath d='M248 176 C242 202 242 228 250 250' stroke-width='6'/%3E%3Cpath d='M430 16 C424 40 424 62 430 82' stroke-width='7'/%3E%3Cpath d='M402 30 C394 54 392 78 398 100' stroke-width='7'/%3E%3Cpath d='M374 48 C364 72 362 96 368 118' stroke-width='7'/%3E%3Cpath d='M348 70 C338 94 336 118 342 140' stroke-width='6'/%3E%3Cpath d='M322 94 C312 118 310 142 318 164' stroke-width='6'/%3E%3Cpath d='M298 118 C288 142 288 166 296 188' stroke-width='6'/%3E%3C/g%3E%3C/svg%3E") no-repeat top right / contain;
-  opacity: .8; filter: blur(1px);
-  transform-origin: 94% 4%; animation: frondSway 13s ease-in-out infinite alternate; }
-@keyframes frondSway { from { transform: rotate(-.7deg); } to { transform: rotate(1.1deg); } }
+ }
 
 /* vignette + live film grain */
 .scene-vignette { position: absolute; inset: 0;
