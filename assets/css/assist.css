@@ -19,7 +19,7 @@
 body.nav-locked .rga-launch { display: none; }
 
 .rga-panel {
-  position: fixed; right: 1rem; bottom: 1rem; z-index: 86;
+  position: fixed; right: 1rem; bottom: 1rem; z-index: 95;
   width: min(400px, calc(100vw - 2rem)); height: min(600px, calc(100dvh - 2rem));
   display: none; flex-direction: column; overflow: hidden;
   background: #F9F7F2; border-radius: 20px; border: 1px solid rgba(9, 45, 92, .2);
@@ -72,9 +72,26 @@ body.nav-locked .rga-launch { display: none; }
 .rga-send:hover { transform: scale(1.06); }
 .rga-fine { font-size: .68rem; color: #7C8B98; text-align: center; padding: 0 .9rem .6rem; background: #fff; flex-shrink: 0; }
 
-@media (max-width: 480px) {
-  .rga-panel { right: .5rem; bottom: .5rem; width: calc(100vw - 1rem); height: min(560px, calc(100dvh - 1rem)); }
+/* Phones get a full sheet pinned to the VISUAL viewport, not the layout one.
+   iOS does not shrink the layout viewport when the keyboard opens, so a
+   position:fixed panel anchored to bottom sits behind the keyboard and you
+   can't see what you're typing. dvh doesn't help — it tracks browser chrome,
+   not the keyboard. assist.js drives --rga-h/--rga-top off visualViewport. */
+@media (max-width: 600px) {
+  .rga-panel {
+    left: 0; right: 0; bottom: auto; top: 0;
+    width: 100%; border-radius: 0;
+    height: var(--rga-h, 100dvh);
+    transform: translateY(var(--rga-top, 0px));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .rga-panel .rga-input { padding-bottom: calc(.8rem + env(safe-area-inset-bottom)); }
 }
+
+/* Background must not scroll under the open sheet — that drifting is what
+   reads as the panel "jumping around". */
+body.rga-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidden; }
+body.rga-locked .mobile-call { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .rga-launch .rga-dot, .rga-typing i { animation: none; }

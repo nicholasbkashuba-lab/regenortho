@@ -21,6 +21,16 @@ Static site, 56 pages, generated — do not edit HTML files directly.
 - `assets/js/main.js` — nav (Escape closes; matchMedia 1100px must stay in sync with the
   CSS breakpoint), reveals, counters, seamless marquees (children cloned once; per-item
   margins, NOT flex gap), quote rotator, figure attract cycle, FAQ filter/search.
+- MOBILE ASSISTANT (iOS): on <=600px the panel is a full sheet pinned to the
+  VISUAL viewport — assist.js sets --rga-h/--rga-top from window.visualViewport
+  on its resize+scroll events. iOS does NOT shrink the layout viewport for the
+  keyboard, so a position:fixed panel anchored to bottom lands behind it and you
+  can't see what you're typing; dvh does not help (it tracks browser chrome, not
+  the keyboard). Body gets .rga-locked (position:fixed + top:-scrollY) while
+  open or the background drifts underneath; the restore forces
+  scroll-behavior:auto because the site's global smooth scrolling turns
+  scrollTo() into an animation that lands elsewhere. Panel z-index is 95 — it
+  must outrank the fixed site header (90) now that the sheet starts at top:0.
 - `assets/js/assist.js` — concierge assistant. SET ANSWERS only (FAQ array) — no AI, no
   external API, no medical advice; route unknowns to 833-783-6561. Leads deliver via
   FormSubmit (formsubmit.co/ajax/info@regenorthopalmbeach.com) with a localStorage retry queue.

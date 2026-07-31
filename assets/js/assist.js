@@ -120,21 +120,79 @@
     panel.querySelector(".rga-close").addEventListener("click", close);
     sendBtn.addEventListener("click", submitInput);
     input.addEventListener("keydown", function (e) { if (e.key === "Enter") submitInput(); });
+    // keep the newest message and the input visible as the keyboard opens
+    input.addEventListener("focus", function () {
+      setTimeout(function () { fitViewport(); log.scrollTop = log.scrollHeight; }, 250);
+    });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && panel.classList.contains("is-open")) close();
     });
+  }
+
+  /* ---- iOS keyboard handling -------------------------------------------
+     The only reliable source of "where is the visible area right now" is
+     visualViewport. Without it the panel is anchored to the layout viewport,
+     which iOS does not shrink for the keyboard, so the input ends up behind
+     it. We size the sheet to the visual viewport and shift it by offsetTop. */
+  var mobileMQ = window.matchMedia("(max-width: 600px)");
+  var vv = window.visualViewport;
+  var lockedY = 0;
+
+  function fitViewport() {
+    if (!vv || !mobileMQ.matches || !panel.classList.contains("is-open")) return;
+    panel.style.setProperty("--rga-h", vv.height + "px");
+    panel.style.setProperty("--rga-top", vv.offsetTop + "px");
+  }
+  function clearViewport() {
+    panel.style.removeProperty("--rga-h");
+    panel.style.removeProperty("--rga-top");
+  }
+  if (vv) {
+    vv.addEventListener("resize", fitViewport);
+    vv.addEventListener("scroll", fitViewport);
+  }
+
+  function lockScroll() {
+    if (!mobileMQ.matches) return;
+    lockedY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.top = -lockedY + "px";
+    document.body.classList.add("rga-locked");
+  }
+  function unlockScroll() {
+    if (!document.body.classList.contains("rga-locked")) return;
+    // the site sets scroll-behavior:smooth, which turns the restore into an
+    // animation and lands somewhere else entirely — force it instant
+    var html = document.documentElement;
+    var prev = html.style.scrollBehavior;
+    html.style.scrollBehavior = "auto";
+    document.body.classList.remove("rga-locked");
+    document.body.style.top = "";
+    window.scrollTo(0, lockedY);       // restore exactly where they were
+    html.style.scrollBehavior = prev;
   }
 
   function open() {
     panel.classList.add("is-open");
     launcher.style.display = "none";
     if (!log.childElementCount) greet();
-    input.focus({ preventScroll: true });
+    lockScroll();
+    fitViewport();
+    // iOS only raises the keyboard for a focus inside a user gesture, and only
+    // once the element is actually laid out — hence the next frame.
+    requestAnimationFrame(function () { input.focus({ preventScroll: true }); });
   }
   function close() {
     panel.classList.remove("is-open");
     launcher.style.display = "";
+    input.blur();
+    unlockScroll();
+    clearViewport();
   }
+
+  mobileMQ.addEventListener("change", function () {
+    if (!mobileMQ.matches) { unlockScroll(); clearViewport(); }
+    else fitViewport();
+  });
 
   function say(text, cls) {
     var m = el("div", "rga-msg " + (cls || "rga-msg-bot"), text);
