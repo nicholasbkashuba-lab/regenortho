@@ -77,20 +77,29 @@ true-4K master; never upscale past 2688. ALWAYS re-encode from this master via a
 GitHub Actions relay (sandbox can't reach Dropbox and has no ffmpeg).
 
 Pipeline (per-frame luma analysis drove every number): the drone's auto-exposure
-dips to Y=110 while the dark pier fills the frame (7–8.5s) then snaps +24 at
-9.0s; the railing exits frame by 10.0s; 10.0–15.65s is stable (Y 134–140). So
-the loop uses ONLY the post-pier glide: A=trim 10.0:15.65, B=trim 9.55:10.1,
-both setpts/0.8 then fps=30 (xfade needs CFR), xfade 0.5s at offset 6.5625 →
-7.25s seamless loop whose wrap lands 0.1s from restart. Grade baked in:
-eq=gamma=1.12:brightness=0.02:saturation=1.12 (gamma-led — doesn't clip sand).
-Encode: libx264 veryslow, -g 60, faststart, bt709 tags, no audio.
+dips to Y=110 while crossing the dark pier (7-8.5s) then snaps +24 at 9.0s; the
+APPROACH (0-6.5s, pier front and centre) is stable Y 126-130 and the post-pier
+glide (9.6-15.65s) is stable Y 134-140. The loop keeps the pier by hiding the
+snap inside a deliberate dissolve — three branches, all setpts/0.8 then fps=30
+(xfade needs CFR):
+  A trim 1.0:8.2   pier approach          -> 9.0s slowed
+  B trim 9.6:15.65 post-pier glide        -> 7.5625s
+  C trim 0.55:1.15 wrap stub              -> 0.75s
+  xfade A->B 1.2s @ 7.8 (hides the AE snap), xfade ->C 0.6s @ 14.7625
+  = 15.5s loop whose wrap lands 0.15s from restart.
+Grade baked in: eq=gamma=1.12:brightness=0.02:saturation=1.12 (gamma-led, no
+sand clipping; lifts the pier-shadow dip most). Encode: libx264 veryslow, -g 60,
+faststart, bt709 tags, no audio. Poster: -ss 1.6 of juno-hd = pier mid-approach.
+NOTE: .scene-fronds (a CSS palm silhouette from the old hand-drawn hero) used to
+paint OVER the video at z-index 3 — removed; do not re-add decorations above
+.hero-video-slot.
 
 Renditions in assets/video/ (all crf/preset as noted, single generation):
-  juno-max.mp4     2688×1512 crf20  ~17.6MB — screens ≥2200 effective px
-  juno-hd.mp4      1920×1080 crf20  ~8.9MB  — desktop default
-  juno-hd.webm     2560×1440 VP9    ~9.7MB  — no-H.264 fallback
-  juno-mobile.mp4  1280×720  crf24  ~2.3MB  — phones (<768px)
-  juno-mobile.webm 1280×720  VP9    ~2MB
+  juno-max.mp4     2688×1512 crf22  ~28MB  — screens ≥2200 effective px
+  juno-hd.mp4      1920×1080 crf21  ~17MB  — desktop default
+  juno-hd.webm     2560×1440 VP9    ~21MB  — no-H.264 fallback
+  juno-mobile.mp4  1280×720  crf24  ~5.3MB — phones (<768px)
+  juno-mobile.webm 1280×720  VP9    ~4.7MB
   juno-poster.jpg  1600×900 from the GRADED loop, so it matches frame one
 The <video> ships with NO <source> children and preload="none"; main.js attaches
 ONE rendition pair via matchMedia, mp4 before webm; nothing downloads under
