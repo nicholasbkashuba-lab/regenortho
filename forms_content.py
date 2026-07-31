@@ -56,8 +56,8 @@ GLP_FORM = {
     "plain_name": "Peptide & GLP-1 Questionnaire",
     "lede": "Please complete this form prior to your consultation. All information is kept confidential.",
     "title": "Peptide & GLP-1 Questionnaire | RegenOrtho Palm Beach",
-    "desc": ("Complete the RegenOrtho Palm Beach peptide and GLP-1 screening questionnaire before your "
-             "consultation in Palm Beach Gardens. Fills out in your browser — nothing is transmitted."),
+    "desc": ("Complete the RegenOrtho Palm Beach peptide & GLP-1 screening questionnaire before your "
+             "Palm Beach Gardens consultation — private, filled out entirely in your browser."),
     "ack": ACK_TEXT,
     "card": {
         "for_who": "Anyone starting peptide, NAD+, or GLP-1 weight-loss therapy with us.",
@@ -188,7 +188,7 @@ INTAKE_FORM = {
     "lede": "Please complete this form before your first visit. All information is kept confidential.",
     "title": "New Patient Intake Form | RegenOrtho Palm Beach",
     "desc": ("Complete your RegenOrtho Palm Beach new patient intake form before your first visit in "
-             "Palm Beach Gardens. Fills out in your browser — nothing is transmitted over the internet."),
+             "Palm Beach Gardens — private, and filled out entirely in your own browser."),
     "ack": ACK_TEXT_INTAKE,
     "card": {
         "for_who": "Every new patient, before your first appointment with us.",

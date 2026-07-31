@@ -509,6 +509,12 @@ TESTIMONIALS = [
     ("I am so Thankful I found this practice. I was very happy with the prompt appointment scheduled. The staff is friendly, the Dr as well made me feel comfortable. The pain is much better. I am able to increase my activity.", "Michelle Legere", "Posted on Google"),
 ]
 
+def _assoc_w(img):
+    from PIL import Image as _I
+    w, h = _I.open(os.path.join(ROOT, "assets/media", img)).size
+    return round(w * 54 / h)
+
+
 ASSOCIATIONS = [
     ("assoc-1.png", "American Academy of Orthopaedic Surgeons"),
     ("assoc-2.png", "American Podiatric Medical Association"),
@@ -565,7 +571,7 @@ SERVICES = [
         "name": "Orthopedic & Sports Medicine",
         "nav": "Orthopedic & Sports Medicine",
         "title": "Orthopedic Surgeon Palm Beach Gardens | Sports Medicine",
-        "desc": "Board-certified orthopedic surgeon and sports medicine care in Palm Beach Gardens — same-day injury consultations, joint preservation, arthroscopy, and personalized recovery plans.",
+        "desc": "Board-certified orthopedic surgery & sports medicine in Palm Beach Gardens — same-day injury consults, joint preservation, arthroscopy, recovery plans.",
         "eyebrow": "Orthopedic & Sports Medicine",
         "h1": "Expert Care for Joints, Injuries & Recovery",
         "lede": "Advanced orthopedic and sports medicine solutions designed to restore mobility, treat injuries, and optimize performance with personalized, minimally invasive care.",
@@ -1229,6 +1235,9 @@ SVC_ICONS = {
     "concierge-care": '<path d="M4.6 17.4 h14.8 M6.2 17.4 a5.8 5.8 0 0 1 11.6 0"/><path d="M12 8.4 V6.6"/><circle cx="12" cy="9.6" r="1.1"/>',
 }
 
+_social_dims = {'ig-peptides.jpg': (820, 819), 'ig-guide.jpg': (820, 994), 'ig-gap.jpg': (820, 992), 'ig-pathways.jpg': (820, 821), 'ig-concierge.jpg': (820, 821), 'ig-ladder.jpg': (820, 994), 'ig-chapters.jpg': (820, 994), 'ig-toolkit.jpg': (820, 994), 'ig-careteam.jpg': (820, 821)}
+
+
 def build_home():
     d = 0
     svc_cards = []
@@ -1272,7 +1281,7 @@ def build_home():
     quotes_html = "\n".join(quotes)
 
     assoc = "".join(
-        f'<li><img src="assets/media/{img}?v={asset_v("assets/media/" + img)}" alt="{alt}" height="54" loading="lazy"></li>'
+        f'<li><img src="assets/media/{img}?v={asset_v("assets/media/" + img)}" alt="{alt}" width="{_assoc_w(img)}" height="54" loading="lazy"></li>'
         for img, alt in ASSOCIATIONS
     )
 
@@ -1289,7 +1298,7 @@ def build_home():
     ]
     social_tiles = "".join(
         f"""<a class="social-tile" href="{INSTAGRAM}" rel="noopener" target="_blank" aria-label="Instagram post: {html.escape(cap)}">
-        <img src="assets/social/{img}?v={asset_v('assets/social/' + img)}" alt="{html.escape(cap)}" loading="lazy">
+        <img src="assets/social/{img}?v={asset_v('assets/social/' + img)}" alt="{html.escape(cap)}" width="{_social_dims[img][0]}" height="{_social_dims[img][1]}" loading="lazy">
       </a>"""
         for img, cap in social_posts
     )
@@ -1525,7 +1534,7 @@ def build_home():
     schema = breadcrumb_schema([("", "Home")])
     page = head(
         "Orthopedic, Regenerative & Vein Care Palm Beach Gardens | RegenOrtho",
-        "RegenOrtho Palm Beach: concierge orthopedic, podiatric, regenerative & vein care in Palm Beach Gardens. Board-certified surgeons, 40+ years combined experience. 833-STEM561.",
+        "Concierge orthopedic, podiatric, regenerative & vein care in Palm Beach Gardens. Board-certified surgeons, 40+ years combined experience. Call 833-STEM561.",
         depth=d, canonical="index.html", extra_schema=schema,
     ) + f'<body class="page-home">\n' + body
     write("index.html", page)
@@ -1907,7 +1916,7 @@ def build_providers():
             "Owner, Elite Sports Medicine",
         ],
         "Dr. Marc Matarazzo MD | Orthopedic Surgeon Palm Beach Gardens",
-        "Dr. Marc Matarazzo, MD — board-certified, fellowship-trained orthopedic surgeon in Palm Beach Gardens. Sports medicine, arthroscopy, shoulder & knee, MAKO robotic knee replacement.",
+        "Dr. Marc Matarazzo, MD — board-certified orthopedic surgeon in Palm Beach Gardens. Sports medicine, arthroscopy, shoulder & knee, MAKO robotic replacement.",
         [
             ("../services/orthopedic-sports-medicine.html", "Orthopedic & Sports Medicine"),
             ("../services/mako-robotic-knee-replacement.html", "Mako Robotic Knee Replacement"),
@@ -2615,7 +2624,7 @@ def build_forms():
 </main>
 {footer(d)}"""
     hub = head("Patient Forms | RegenOrtho Palm Beach",
-               "Complete your RegenOrtho Palm Beach patient forms before your visit in Palm Beach Gardens — new patient intake and the peptide & GLP-1 questionnaire, filled out privately in your browser.",
+               "Complete RegenOrtho Palm Beach patient forms at home — the new patient intake and peptide & GLP-1 questionnaire, filled out privately in your browser.",
                depth=d, canonical="forms/index.html", extra_css="assets/css/forms.css",
                extra_schema=breadcrumb_schema([("", "Home"), ("forms/index.html", "Patient Forms")])
                ) + '<body class="page-forms">\n' + hub_body
@@ -2707,6 +2716,9 @@ def build_forms():
         write(f"forms/{f['slug']}.html", page)
 
 
+_BLOG_SEO_TITLES = {'knee-shoulder-hip-pain-without-surgery': 'Joint Pain Without Surgery | RegenOrtho Palm Beach', 'prp-therapy-knee-osteoarthritis': 'PRP for Knee Osteoarthritis | RegenOrtho Palm Beach', 'regenerative-medicine-vs-joint-replacement': 'Regeneration vs Replacement | RegenOrtho Palm Beach', 'five-pillar-concierge-orthopedic-recovery': 'Concierge Orthopedic Recovery | RegenOrtho Palm Beach', 'orthopedic-sports-medicine-pain-free-living': 'Orthopedics & Sports Medicine | RegenOrtho Palm Beach', 'regenerative-medicine-future-of-healing': 'Regenerative Medicine Explained | RegenOrtho Palm Beach', 'healing-without-surgery': 'Healing Without Surgery | RegenOrtho Palm Beach Blog', 'minimally-invasive-foot-ankle-surgery': 'Minimally Invasive Foot Surgery | RegenOrtho Palm Beach', 'modern-vein-care-varicose-spider-veins': 'Modern Varicose Vein Care | RegenOrtho Palm Beach Blog', 'iv-therapy-recovery-wellness': 'IV Therapy for Recovery | RegenOrtho Palm Beach Blog'}
+
+
 def build_blog():
     from blog_content import BLOG_POSTS
     d = 1
@@ -2790,7 +2802,7 @@ def build_blog():
             })
             + breadcrumb_schema([("", "Home"), ("blog/index.html", "Blog"), (f"blog/{p_['slug']}.html", p_["title"])])
         )
-        page = head(f"{p_['title']} | RegenOrtho Palm Beach"[:97],
+        page = head(_BLOG_SEO_TITLES.get(p_["slug"], f"{p_['title']} | RegenOrtho Palm Beach"[:60]),
                     p_["desc"], depth=d, canonical=f"blog/{p_['slug']}.html",
                     og_image=f"assets/media/{p_['image']}",
                     page_type="article", extra_schema=schema) + '<body class="page-post">\n' + body
