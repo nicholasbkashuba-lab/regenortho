@@ -101,6 +101,15 @@ Renditions in assets/video/ (all crf/preset as noted, single generation):
   juno-mobile.mp4  1280×720  crf24  ~5.3MB — phones (<768px)
   juno-mobile.webm 1280×720  VP9    ~4.7MB
   juno-poster.jpg  1600×900 from the GRADED loop, so it matches frame one
+PORTRAIT PHONES get their own 9:16 crop: crop=850:1512:919:0 from the master,
+crf 25 (~5.9MB) + VP9 twin + its own poster. Why: .hero is 92vh and the video is
+object-fit:cover, so a 1280×720 LANDSCAPE file covering a 393×930 portrait hero
+was scaled 2.9× AND lost 68% of the frame — that was the "extremely blurry"
+report. The crop drops it to 1.85×, which is the physical ceiling (master is only
+1512 tall; 3 × 930 CSS px = 2790 device px wanted). Going below 1.85× needs a
+shorter mobile hero, not a better encode.
+The max tier is gated on window.innerWidth >= 1200 AS WELL AS dpr*width >= 2200 —
+a landscape phone is 852px at DPR 3 = 2556 and was being shipped the 28MB file.
 The <video> ships with NO <source> children and preload="none"; main.js attaches
 ONE rendition pair via matchMedia, mp4 before webm; nothing downloads under
 reduced-motion or Save-Data. .hero-video-scrim stays LIGHT (desktop .34→0 across,

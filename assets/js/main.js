@@ -73,12 +73,18 @@
       heroVid.removeAttribute("autoplay");   // poster only
     } else {
       var isMobile = window.matchMedia("(max-width: 767px)").matches;
-      var wantMax = !isMobile &&
+      // A landscape file cover-fitted into a tall portrait hero is scaled ~2.9x
+      // and loses most of the frame. Portrait phones get a 9:16 crop instead.
+      var isPortrait = isMobile && window.matchMedia("(orientation: portrait)").matches
+                       && !!heroVid.getAttribute("data-mp4-portrait");
+      var wantMax = !isMobile && window.innerWidth >= 1200 &&
                     (window.devicePixelRatio || 1) * window.innerWidth >= 2200;
-      var mp4 = isMobile ? heroVid.getAttribute("data-mp4-mobile")
+      var mp4 = isPortrait ? heroVid.getAttribute("data-mp4-portrait")
+              : isMobile ? heroVid.getAttribute("data-mp4-mobile")
               : wantMax ? heroVid.getAttribute("data-mp4-max")
               : heroVid.getAttribute("data-mp4-hd");
-      var webm = isMobile ? heroVid.getAttribute("data-webm-mobile")
+      var webm = isPortrait ? heroVid.getAttribute("data-webm-portrait")
+               : isMobile ? heroVid.getAttribute("data-webm-mobile")
                : wantMax ? heroVid.getAttribute("data-webm-hd")   // VP9 fallback for max tier too
                : heroVid.getAttribute("data-webm-hd");
       var s1 = document.createElement("source");

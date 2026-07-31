@@ -1330,7 +1330,7 @@ def build_home():
              data-mp4-max="assets/video/juno-max.mp4?v={asset_v('assets/video/juno-max.mp4')}"
              data-mp4-hd="assets/video/juno-hd.mp4?v={asset_v('assets/video/juno-hd.mp4')}"
              data-webm-hd="assets/video/juno-hd.webm?v={asset_v('assets/video/juno-hd.webm')}"
-             data-mp4-mobile="assets/video/juno-mobile.mp4?v={asset_v('assets/video/juno-mobile.mp4')}"
+             data-mp4-portrait="assets/video/juno-portrait.mp4?v={asset_v('assets/video/juno-portrait.mp4')}" data-webm-portrait="assets/video/juno-portrait.webm?v={asset_v('assets/video/juno-portrait.webm')}" data-mp4-mobile="assets/video/juno-mobile.mp4?v={asset_v('assets/video/juno-mobile.mp4')}"
              data-webm-mobile="assets/video/juno-mobile.webm?v={asset_v('assets/video/juno-mobile.webm')}"></video>
       <div class="hero-video-scrim"></div>
     </div>
