@@ -1397,7 +1397,7 @@ def build_home():
     <p class="word-lede reveal">Every therapy here works the same way — concentrate what your body already uses to heal, and put it exactly where the damage is. Surgery when it is genuinely the answer. Regeneration when it is not.</p>
     <div class="cta-row word-cta reveal">
       <a class="btn btn-gold" href="services/regenerative-medicine-orthobiologics.html">How regeneration works</a>
-      <a class="btn btn-ghost-light" href="contact.html#book">Book a consultation</a>
+      <a class="btn btn-ghost-light" href="services/index.html">Explore all services</a>
     </div>
   </div>
 </section>
