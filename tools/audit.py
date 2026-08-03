@@ -60,7 +60,9 @@ class Audit:
             if not c:
                 if not is404:
                     self.add(ERR, "canonical", "missing", r)
-            else:
+            elif not is404:
+                # 404.html legitimately canonicalises to the homepage and is never
+                # indexed, so it must not count toward duplicate detection.
                 canons[c.group(1)] += 1
 
             h1s = re.findall(r"<h1[\s>]", html)
