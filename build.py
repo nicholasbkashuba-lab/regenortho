@@ -26,7 +26,10 @@ BASE = "https://www.regenorthopb.com"
 # link previews with the wrong picture.
 #   >>> AT DNS FLIP: set SHARE_BASE = BASE and rebuild. <<<
 # Canonicals, schema @ids and sitemap all stay on BASE — only the share card moves.
-SHARE_BASE = "https://regenortho-first-rehabilitation.vercel.app"
+# Use the plain project alias, NOT the <project>-<team-slug> one: the team slug
+# changed on 2026-08-03 and the old host survived only by luck. This alias carries
+# no team name, so a future rename cannot silently break every share card.
+SHARE_BASE = "https://regenortho-mu.vercel.app"
 SITE_LAUNCHED = "2026-07-30"
 SITE_UPDATED = "2026-07-30"
 # IndexNow key (public by design — it must be served at /{key}.txt to prove
