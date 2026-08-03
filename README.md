@@ -105,9 +105,13 @@ To deploy:
    is committed, and `vercel.json` is already configured.
 2. Set the production domain to `www.regenorthopb.com`.
 3. Point DNS: `A @ → 76.76.21.21`, `CNAME www → cname.vercel-dns.com`.
-4. Submit `sitemap.xml` in Google Search Console and update the Google Business Profile
+4. **Set `SHARE_BASE = BASE` in `build.py` and rebuild.** Until the domain resolves,
+   `og:image` has to point at the live `*.vercel.app` host, because link-preview
+   scrapers actually fetch that URL and fall back to a random page image if it 404s.
+   `build.py` prints a reminder on every build while the two differ.
+5. Submit `sitemap.xml` in Google Search Console and update the Google Business Profile
    website link.
-5. Click the FormSubmit activation email on the first lead.
+6. Click the FormSubmit activation email on the first lead.
 
 To hand the whole thing to the practice, transfer this repo to their GitHub account and
 re-import it under their own Vercel account — nothing in the code needs to change.

@@ -18,6 +18,15 @@ import re
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 BASE = "https://www.regenorthopb.com"
+
+# Host used ONLY for og:image / twitter:image. Link-preview scrapers (iMessage,
+# Slack, Facebook, LinkedIn) actually fetch that URL; if it 404s they fall back
+# to grabbing some arbitrary image off the page. regenorthopb.com is not pointed
+# at Vercel yet, so pre-launch it has to be the live deploy host or every shared
+# link previews with the wrong picture.
+#   >>> AT DNS FLIP: set SHARE_BASE = BASE and rebuild. <<<
+# Canonicals, schema @ids and sitemap all stay on BASE — only the share card moves.
+SHARE_BASE = "https://regenortho-first-rehabilitation.vercel.app"
 SITE_LAUNCHED = "2026-07-30"
 SITE_UPDATED = "2026-07-30"
 # IndexNow key (public by design — it must be served at /{key}.txt to prove
@@ -37,6 +46,11 @@ ADDRESS_ZIP = "33410"
 HOURS = "Monday – Friday: 8:00 AM – 5:00 PM"
 INSTAGRAM = "https://www.instagram.com/regenortho_palmbeach/"
 MAP_URL = "https://maps.google.com/maps?q=RegenOrtho%20Palm%20Beach%2011380%20Prosperity%20Farms%20Road%20Palm%20Beach%20Gardens"
+# Alt for the default share card. Deliberately does not name individuals — the
+# roster is named on /about and /providers, and a share card should not be the
+# thing that gets a person's name wrong.
+OG_TEAM_ALT = ("The RegenOrtho Palm Beach care team — orthopedic, podiatric, vein and "
+               "regenerative specialists at the Palm Beach Gardens clinic")
 GEO_LAT, GEO_LNG = 26.8449, -80.0693
 
 ORG_ID = f"{BASE}/#organization"
@@ -59,15 +73,62 @@ def asset_v(path):
     return _v_cache[path]
 
 
+_dim_cache = {}
+
+
+def img_dims(path, fallback=(1200, 630)):
+    """Real pixel size of a JPEG/PNG, stdlib-only (no Pillow needed to build).
+
+    og:image:width/height used to be hardcoded 1200x630 while service, condition
+    and provider pages passed their own differently-shaped photos; scrapers that
+    trust the declared size then lay the card out wrong.
+    """
+    if path in _dim_cache:
+        return _dim_cache[path]
+    dims = fallback
+    try:
+        with open(os.path.join(ROOT, path), "rb") as f:
+            data = f.read()
+        if data[:8] == b"\x89PNG\r\n\x1a\n":
+            dims = (int.from_bytes(data[16:20], "big"), int.from_bytes(data[20:24], "big"))
+        elif data[:2] == b"\xff\xd8":
+            i = 2
+            while i + 9 < len(data):
+                if data[i] != 0xFF:
+                    i += 1
+                    continue
+                m = data[i + 1]
+                if m in (0xD8, 0x01) or 0xD0 <= m <= 0xD7:   # standalone markers
+                    i += 2
+                    continue
+                seg = int.from_bytes(data[i + 2:i + 4], "big")
+                # SOF0-SOF15 carry the frame size; C4/C8/CC are DHT/JPG/DAC.
+                if 0xC0 <= m <= 0xCF and m not in (0xC4, 0xC8, 0xCC):
+                    dims = (int.from_bytes(data[i + 7:i + 9], "big"),
+                            int.from_bytes(data[i + 5:i + 7], "big"))
+                    break
+                i += 2 + seg
+    except OSError:
+        pass
+    _dim_cache[path] = dims
+    return dims
+
+
 # ---------------------------------------------------------------------------
 # Shared chrome
 # ---------------------------------------------------------------------------
 
-def head(title, desc, depth=0, canonical="", og_image="assets/media/og-image.jpg",
+# Default share card: the care-team photo, cropped to 1200x630. A link preview
+# that shows the people beats one that shows the logo — and the logo is already
+# in the org schema, so nothing is lost.
+def head(title, desc, depth=0, canonical="", og_image="assets/media/og-team.jpg",
          page_type="website", extra_schema="", preload_hero=False, extra_css=""):
     p = "../" * depth
     canonical_url = f"{BASE}/{canonical}" if canonical else f"{BASE}/"
-    og_url = f"{BASE}/{og_image}?v={asset_v(og_image)}"
+    og_url = f"{SHARE_BASE}/{og_image}?v={asset_v(og_image)}"
+    og_w, og_h = img_dims(og_image)
+    og_alt = (OG_TEAM_ALT if og_image == "assets/media/og-team.jpg" else title)
+    og_type = "image/png" if og_image.lower().endswith(".png") else "image/jpeg"
     schema = org_schema()
     page_graph = json.dumps({
         "@context": "https://schema.org",
@@ -103,13 +164,16 @@ def head(title, desc, depth=0, canonical="", og_image="assets/media/og-image.jpg
 <meta property="og:description" content="{html.escape(desc)}">
 <meta property="og:url" content="{canonical_url}">
 <meta property="og:image" content="{og_url}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:secure_url" content="{og_url}">
+<meta property="og:image:type" content="{og_type}">
+<meta property="og:image:width" content="{og_w}">
+<meta property="og:image:height" content="{og_h}">
+<meta property="og:image:alt" content="{html.escape(og_alt)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{html.escape(title)}">
 <meta name="twitter:description" content="{html.escape(desc)}">
 <meta name="twitter:image" content="{og_url}">
-<meta name="twitter:image:alt" content="{html.escape(title)}">
+<meta name="twitter:image:alt" content="{html.escape(og_alt)}">
 <link rel="alternate" type="application/rss+xml" title="{NAME} — Blog" href="{p}blog/feed.xml">
 <meta name="theme-color" content="#071A38">
 <meta name="color-scheme" content="light dark">
@@ -378,7 +442,9 @@ def org_schema():
                      "url": f"{BASE}/assets/media/logo-dark.png",
                      "contentUrl": f"{BASE}/assets/media/logo-dark.png",
                      "caption": NAME},
-            "image": f"{BASE}/assets/media/og-image.jpg",
+            "image": {"@type": "ImageObject",
+                      "url": f"{BASE}/assets/media/og-team.jpg",
+                      "caption": OG_TEAM_ALT},
             "telephone": "+1-833-783-6561",
             "email": EMAIL,
             "priceRange": "$$",
@@ -2122,7 +2188,7 @@ def build_about():
     page = head("About Us | RegenOrtho Palm Beach — Palm Beach Gardens FL",
                 "Meet RegenOrtho Palm Beach: a concierge practice blending orthopedic, podiatric, regenerative & vein care, led by board-certified surgeons in Palm Beach Gardens.",
                 depth=d, canonical="about.html",
-                og_image="assets/team/team-group.jpg",
+                og_image="assets/media/og-team.jpg",   # the 1200x630 crop, not the square original
                 extra_schema=schema) + '<body class="page-about">\n' + body
     write("about.html", page)
 
@@ -3051,6 +3117,9 @@ def main():
     build_blog()
     build_legal_and_404()
     build_meta()
+    if SHARE_BASE != BASE:
+        print(f"\nNOTE: share cards (og:image) point at {SHARE_BASE}, not {BASE}.")
+        print("      Once regenorthopb.com resolves to Vercel, set SHARE_BASE = BASE and rebuild.")
     print("\nDone.")
 
 
