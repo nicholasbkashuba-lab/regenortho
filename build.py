@@ -2471,9 +2471,13 @@ def build_contact():
           <option>Not sure — help me choose</option>
         </select>
       </label>
-      <label>Message<textarea name="message" rows="4" placeholder="Tell us briefly what's going on and when you'd like to come in."></textarea></label>
+      <!-- The placeholder deliberately does NOT ask what's wrong. This form posts to
+           FormSubmit, which carries no BAA, so it must stay contact-and-scheduling only.
+           The warning sits with the field, not under the button, so it is read first. -->
+      <label>Message<textarea name="message" rows="4" placeholder="Which service you're interested in, and when you'd like to come in."></textarea></label>
+      <p class="form-fine form-fine-inline">Please don't include medical history or symptoms here — we'll take that securely at your visit.</p>
       <button class="btn btn-gold btn-block" type="submit">Book Appointment</button>
-      <p class="form-fine">Submitting sends your request straight to our front desk. For anything urgent, call {PHONE_DISPLAY}. Please don't include detailed medical history in this form.</p>
+      <p class="form-fine">Submitting sends your request straight to our front desk. For anything urgent, call {PHONE_DISPLAY}.</p>
     </form>
   </div>
 </section>
