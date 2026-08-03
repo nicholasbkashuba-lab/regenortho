@@ -28,7 +28,7 @@ BASE = "https://www.regenorthopb.com"
 # Canonicals, schema @ids and sitemap all stay on BASE — only the share card moves.
 SHARE_BASE = "https://regenortho-first-rehabilitation.vercel.app"
 SITE_LAUNCHED = "2026-07-30"
-SITE_UPDATED = "2026-07-30"
+SITE_UPDATED = "2026-08-03"
 # IndexNow key (public by design — it must be served at /{key}.txt to prove
 # ownership). Ping Bing/Yandex on content changes; see README.
 INDEXNOW_KEY = "a7f3c1e94b2d48f6ae05d7c318b6f240"
@@ -145,7 +145,11 @@ def head(title, desc, depth=0, canonical="", og_image="assets/media/og-team.jpg"
     }, separators=(",", ":"))
     hero_preload = ""
     if preload_hero:
-        hero_preload = ""  # hero is SVG/CSS — nothing extra to preload
+        # The hero poster is the homepage's LCP image — the <video> ships
+        # preload="none", so the poster is what paints first on every device.
+        _pp = f"assets/video/juno-poster.jpg?v={asset_v('assets/video/juno-poster.jpg')}"
+        hero_preload = (f'<link rel="preload" as="image" href="{p}{_pp}" '
+                        f'fetchpriority="high">\n')
     extra_css_tag = ""
     if extra_css:
         extra_css_tag = f'<link rel="stylesheet" href="{p}{extra_css}?v={asset_v(extra_css)}">\n'
@@ -300,11 +304,19 @@ def nav(depth=0, current=""):
 """
 
 
-def footer(depth=0, extra_js=""):
+def footer(depth=0, extra_js="", analytics=True):
     p = "../" * depth
     extra_js_tag = ""
     if extra_js:
         extra_js_tag = f'<script src="{p}{extra_js}?v={asset_v(extra_js)}" defer></script>\n'
+    # Vercel Web Analytics — cookieless, no consent banner needed. Deliberately
+    # NOT emitted on /forms/* (analytics=False there): those pages ask about
+    # health, and per the HIPAA notes in README.md no tracking script may load
+    # on them. 404s harmlessly until Analytics is enabled in the Vercel
+    # dashboard (Project → Analytics → Enable).
+    analytics_tag = ""
+    if analytics:
+        analytics_tag = '<script defer src="/_vercel/insights/script.js"></script>\n'
     svc = "\n".join(
         f'<li><a href="{p}{href}">{label}</a></li>' for href, label in SERVICES_NAV[:8]
     )
@@ -364,7 +376,7 @@ def footer(depth=0, extra_js=""):
 </footer>
 <script src="{p}assets/js/main.js?v={asset_v('assets/js/main.js')}"></script>
 <script src="{p}assets/js/assist.js?v={asset_v('assets/js/assist.js')}" defer></script>
-{extra_js_tag}</body>
+{analytics_tag}{extra_js_tag}</body>
 </html>
 """
 
@@ -613,7 +625,7 @@ IV_MENU = [
 INFUSIONS = [
     {"slug": "ivig", "name": "IVIG (Intravenous Immunoglobulin)",
      "title": "IVIG Infusion Therapy Palm Beach Gardens | RegenOrtho",
-     "desc": "Physician-supervised IVIG (intravenous immunoglobulin) infusion therapy in a private Palm Beach Gardens infusion suite. Insurance coordination and flexible scheduling.",
+     "desc": "Physician-supervised IVIG (intravenous immunoglobulin) infusion therapy in a private Palm Beach Gardens suite. Insurance coordination and flexible scheduling.",
      "lede": "Intravenous immunoglobulin therapy delivered in a private, clinician-supervised infusion suite — without the hospital.",
      "body": "IVIG (intravenous immunoglobulin) is a physician-prescribed infusion used to support patients with certain immune-mediated and neurological conditions. Our infusion center administers IVIG in a calm, private suite with clinical monitoring throughout your visit, coordinating directly with your referring physician on protocol, frequency, and follow-up."},
     {"slug": "krystexxa", "name": "Krystexxa Infusion Therapy",
@@ -681,7 +693,7 @@ SERVICES = [
         "name": "Podiatric Medicine & Foot/Ankle Surgery",
         "nav": "Podiatric Medicine & Foot/Ankle Surgery",
         "title": "Podiatrist Palm Beach Gardens | Foot & Ankle Surgery",
-        "desc": "Board-certified podiatric surgeon in Palm Beach Gardens — minimally invasive foot & ankle surgery, same-day custom orthotics, heel pain relief, and gait correction.",
+        "desc": "Board-certified podiatric surgeon in Palm Beach Gardens — minimally invasive foot & ankle surgery, custom orthotics, heel pain relief, and gait correction.",
         "eyebrow": "Podiatric Medicine & Foot/Ankle Surgery",
         "h1": "Precision Foot & Ankle Care for Active Lives",
         "lede": "Advanced podiatric treatment using minimally invasive procedures, same-day custom orthotics, and gait correction to relieve pain and restore confident movement.",
@@ -846,7 +858,7 @@ SERVICES = [
         "name": "MISHA Knee System",
         "nav": "MISHA Knee System",
         "title": "MISHA Knee System Palm Beach | Implantable Shock Absorber",
-        "desc": "The MISHA Knee System — an implantable shock absorber for medial knee osteoarthritis — offered in Palm Beach Gardens for patients not ready for knee replacement.",
+        "desc": "The MISHA Knee System — an implantable shock absorber for medial knee osteoarthritis — offered in Palm Beach Gardens for patients not ready for replacement.",
         "eyebrow": "MISHA Knee System",
         "h1": "The MISHA Knee System: A Shock Absorber for Your Knee",
         "lede": "An implantable shock absorber designed to relieve pain and improve function in patients with medial knee osteoarthritis — placed outside the joint in an outpatient procedure.",
@@ -884,7 +896,7 @@ SERVICES = [
         "name": "Mako Robotic-Assisted Total Knee Replacement",
         "nav": "Mako Robotic Knee Replacement",
         "title": "Mako Robotic Knee Replacement Palm Beach Gardens | RegenOrtho",
-        "desc": "Mako robotic-arm assisted total knee replacement in Palm Beach Gardens — 3D CT planning, haptic precision, and personalized implant placement by a certified surgeon.",
+        "desc": "Mako robotic-arm assisted total knee replacement in Palm Beach Gardens — 3D CT planning, haptic precision, and personalized implant placement.",
         "eyebrow": "Mako Robotic-Assisted Surgery",
         "h1": "Mako Robotic-Assisted Total Knee Replacement",
         "lede": "State-of-the-art robotic-arm assisted knee replacement with 3D CT-based planning and haptic guidance — improving surgical accuracy to help you get back to your active life sooner.",
@@ -922,7 +934,7 @@ SERVICES = [
         "name": "Neuropathy Restoration Program",
         "nav": "Neuropathy Restoration Program",
         "title": "Neuropathy Treatment Palm Beach Gardens | Nerve Restoration",
-        "desc": "The Neuropathy Restoration Program in Palm Beach Gardens — IV-enhanced, regenerative nerve repair for burning, tingling, and numbness. Non-surgical and personalized.",
+        "desc": "The Neuropathy Restoration Program in Palm Beach Gardens — regenerative nerve repair for burning, tingling, and numbness. Non-surgical, personalized.",
         "eyebrow": "Neuropathy Restoration Program™",
         "h1": "A Comprehensive Nerve Repair & Regenerative Therapy Program",
         "lede": "Reduce burning, tingling, and numbness. Improve nerve function and mobility. Non-surgical, personalized treatment plans that target the root cause of nerve damage — not just the symptoms.",
@@ -1000,7 +1012,7 @@ SERVICES = [
         "name": "Peptide Therapy",
         "nav": "Peptide Therapy",
         "title": "Peptide Therapy Palm Beach Gardens | Physician-Supervised",
-        "desc": "Physician-supervised peptide therapy in Palm Beach Gardens — targeted protocols for joint & tendon repair, inflammation, sleep, skin, muscle, and immunity. From $249/month.",
+        "desc": "Physician-supervised peptide therapy in Palm Beach Gardens — protocols for joint & tendon repair, inflammation, sleep, skin, and immunity. From $249/month.",
         "eyebrow": "Peptide Therapy",
         "h1": "Targeted Healing, Condition by Condition",
         "lede": "Physician-supervised peptide protocols matched to what you are actually trying to fix — repair, recovery, longevity, and aesthetics. Programs from $249/month.",
@@ -1042,7 +1054,7 @@ SERVICES = [
         "name": "Concierge & Direct-Pay Care",
         "nav": "Concierge & Direct-Pay Care",
         "title": "Concierge Orthopedic Care Palm Beach | Direct-Pay Medicine",
-        "desc": "Private concierge and direct-pay orthopedic care in Palm Beach Gardens — same-day diagnostics, private suites, transparent bundled pricing, and direct specialist access.",
+        "desc": "Private concierge and direct-pay orthopedic care in Palm Beach Gardens — same-day diagnostics, private suites, bundled pricing, and direct specialist access.",
         "eyebrow": "Concierge & Cash-Pay Services",
         "h1": "Private Concierge & Direct-Pay Care",
         "lede": "Private, direct-pay care offering same-day diagnostics, tailored treatment planning, private suites, and transparent bundled pricing for streamlined, personalized recovery.",
@@ -1083,7 +1095,7 @@ SERVICES = [
 CONDITIONS = [
     {"slug": "knee-pain", "name": "Knee Pain",
      "title": "Knee Pain Treatment Palm Beach Gardens | RegenOrtho",
-     "desc": "Knee pain treatment in Palm Beach Gardens — from PRP and joint preservation to the MISHA shock absorber and Mako robotic knee replacement. Same-week consultations.",
+     "desc": "Knee pain treatment in Palm Beach Gardens — from PRP and joint preservation to the MISHA shock absorber and Mako robotic knee replacement. Same-week visits.",
      "h1": "Knee Pain, Treated at Every Stage",
      "lede": "From early arthritis to bone-on-bone — a full spectrum of knee care under one roof, so your treatment matches your stage, not a one-size-fits-all protocol.",
      "img": "knee-implant.jpg",
@@ -1094,7 +1106,7 @@ CONDITIONS = [
               ("What happens at a knee evaluation?", "A focused exam plus imaging review — we identify the pain source, grade the arthritis or injury, and lay out every option that fits, from conservative care to surgery.")]},
     {"slug": "shoulder-pain", "name": "Shoulder Pain",
      "title": "Shoulder Pain Treatment Palm Beach Gardens | RegenOrtho",
-     "desc": "Shoulder pain care in Palm Beach Gardens — rotator cuff injuries, arthritis, and sports injuries treated with arthroscopy, regenerative medicine, and expert diagnosis.",
+     "desc": "Shoulder pain care in Palm Beach Gardens — rotator cuff injuries, arthritis, and sports injuries treated with arthroscopy and regenerative medicine.",
      "h1": "Shoulder Pain & Rotator Cuff Care",
      "lede": "Fellowship-trained shoulder expertise — from minimally invasive arthroscopy to regenerative options for tendons that need help healing.",
      "img": "svc-ortho.jpg",
@@ -1116,7 +1128,7 @@ CONDITIONS = [
               ("Can hip arthritis be managed without replacement?", "Earlier stages often respond to a combination of activity strategy, strengthening, and injection-based care; when replacement becomes the right answer, we'll tell you honestly.")]},
     {"slug": "arthritis-joint-pain", "name": "Arthritis & Joint Pain",
      "title": "Arthritis Treatment Palm Beach Gardens | Joint Pain Relief",
-     "desc": "Arthritis and chronic joint pain care in Palm Beach Gardens — regenerative medicine, joint preservation, unloading implants, and robotic replacement when needed.",
+     "desc": "Arthritis and chronic joint pain care in Palm Beach Gardens — regenerative medicine, joint preservation, unloading implants, and robotic replacement.",
      "h1": "Arthritis Care Across the Whole Spectrum",
      "lede": "Steroids mask the pain — our goal is a joint environment that hurts less and functions better, stage by stage.",
      "img": "svc-regen.jpg",
@@ -1127,7 +1139,7 @@ CONDITIONS = [
               ("Which joints can regenerative medicine help?", "Knees, shoulders, hips, and smaller joints affected by arthritis or soft-tissue degeneration — candidacy depends on stage and imaging findings.")]},
     {"slug": "sports-injuries", "name": "Sports Injuries",
      "title": "Sports Injury Doctor Palm Beach Gardens | Same-Day Care",
-     "desc": "Sports injury care in Palm Beach Gardens from a fellowship-trained sports medicine surgeon — same-day consultations, return-to-play programs, and regenerative support.",
+     "desc": "Sports injury care in Palm Beach Gardens from a fellowship-trained sports medicine surgeon — return-to-play programs and regenerative support.",
      "h1": "Sports Injuries, From Sideline to Return-to-Play",
      "lede": "Care from a surgeon who has covered team sidelines for over two decades — built to get you back to your sport safely, not just out of pain.",
      "img": "sports-recovery.jpg",
@@ -1138,7 +1150,7 @@ CONDITIONS = [
               ("Do you treat weekend athletes or just competitive ones?", "Both — the same diagnostic rigor and recovery structure applies whether you're chasing a championship or a personal best.")]},
     {"slug": "tendon-ligament-injuries", "name": "Tendon & Ligament Injuries",
      "title": "Tendon & Ligament Injury Care Palm Beach Gardens",
-     "desc": "Tendonitis, tendinopathy, and ligament injury treatment in Palm Beach Gardens — EPAT shockwave, PRP, and guided rehabilitation for stubborn soft-tissue problems.",
+     "desc": "Tendonitis, tendinopathy, and ligament injury treatment in Palm Beach Gardens — EPAT shockwave, PRP, and guided rehabilitation for soft-tissue problems.",
      "h1": "Stubborn Tendon & Ligament Problems, Solved",
      "lede": "Chronic tendon pain rarely heals by resting harder — it responds to therapies that actually change the tissue.",
      "img": "ultrasound-guided.jpg",
@@ -1160,7 +1172,7 @@ CONDITIONS = [
               ("What if my ankle still feels unstable after a sprain?", "Chronic instability responds to structured strengthening and proprioception work; persistent mechanical instability may need further evaluation.")]},
     {"slug": "plantar-fasciitis", "name": "Plantar Fasciitis & Heel Pain",
      "title": "Plantar Fasciitis Treatment Palm Beach Gardens | Heel Pain",
-     "desc": "Plantar fasciitis and heel pain treatment in Palm Beach Gardens — EPAT shockwave, same-day custom orthotics, and gait correction from a board-certified podiatrist.",
+     "desc": "Plantar fasciitis and heel pain treatment in Palm Beach Gardens — EPAT shockwave, custom orthotics, and gait correction from a board-certified podiatrist.",
      "h1": "Heel Pain That Finally Gets Better",
      "lede": "Those first steps in the morning shouldn't be the hardest part of your day.",
      "img": "podiatry-exam.jpg",
@@ -1606,7 +1618,7 @@ def build_home():
     page = head(
         "Orthopedic, Regenerative & Vein Care Palm Beach Gardens | RegenOrtho",
         "Concierge orthopedic, podiatric, regenerative & vein care in Palm Beach Gardens. Board-certified surgeons, 40+ years combined experience. Call 833-STEM561.",
-        depth=d, canonical="index.html", extra_schema=schema,
+        depth=d, canonical="index.html", extra_schema=schema, preload_hero=True,
     ) + f'<body class="page-home">\n' + body
     write("index.html", page)
 
@@ -1741,7 +1753,7 @@ def build_services():
 {footer(d)}"""
     schema = breadcrumb_schema([("", "Home"), ("services/index.html", "Our Services")])
     page = head("Our Services | RegenOrtho Palm Beach — Palm Beach Gardens",
-                "All RegenOrtho Palm Beach services: orthopedics, podiatry, regenerative medicine, vein care, IV therapy, MISHA & Mako knee solutions, weight loss, and concierge care.",
+                "RegenOrtho Palm Beach services: orthopedics, podiatry, regenerative medicine, vein care, IV therapy, MISHA & Mako knees, weight loss, and concierge care.",
                 depth=d, canonical="services/index.html", extra_schema=schema) + '<body class="page-services">\n' + body
     write("services/index.html", page)
 
@@ -1867,7 +1879,7 @@ def build_locations():
         )
         page = head(
             f"Orthopedic & Regenerative Care {city} FL | RegenOrtho",
-            f"{city} residents: board-certified orthopedic, podiatric, regenerative & vein care minutes away in Palm Beach Gardens. Same-week consultations — call 833-STEM561.",
+            f"{city} residents: orthopedic, podiatric, regenerative & vein care minutes away in Palm Beach Gardens. Same-week consultations — call 833-STEM561.",
             depth=d, canonical=f"locations/{loc['slug']}.html", extra_schema=schema,
         ) + '<body class="page-location">\n' + body
         write(f"locations/{loc['slug']}.html", page)
@@ -2042,7 +2054,7 @@ def build_providers():
             "Author, <em>The Regenerative Foot &amp; Ankle Guide</em>",
         ],
         "Dr. Orlando Cedeno DPM | Podiatrist Palm Beach Gardens",
-        "Dr. Orlando Cedeno, DPM — board-certified podiatric surgeon and vein specialist in Palm Beach Gardens. Foot & ankle surgery, heel pain, custom orthotics, and vein care.",
+        "Dr. Orlando Cedeno, DPM — board-certified podiatric surgeon and vein specialist in Palm Beach Gardens. Foot & ankle surgery, heel pain, and custom orthotics.",
         [
             ("../services/podiatric-medicine-foot-ankle-surgery.html", "Podiatric Medicine & Foot/Ankle Surgery"),
             ("../services/vein-care.html", "Vein Care — Medical & Cosmetic"),
@@ -2186,7 +2198,7 @@ def build_about():
         + breadcrumb_schema([("", "Home"), ("about.html", "About Us")])
     )
     page = head("About Us | RegenOrtho Palm Beach — Palm Beach Gardens FL",
-                "Meet RegenOrtho Palm Beach: a concierge practice blending orthopedic, podiatric, regenerative & vein care, led by board-certified surgeons in Palm Beach Gardens.",
+                "RegenOrtho Palm Beach: a concierge practice blending orthopedic, podiatric, regenerative & vein care, led by board-certified surgeons in Palm Beach Gardens.",
                 depth=d, canonical="about.html",
                 og_image="assets/media/og-team.jpg",   # the 1200x630 crop, not the square original
                 extra_schema=schema) + '<body class="page-about">\n' + body
@@ -2489,7 +2501,7 @@ def build_contact():
 {footer(d)}"""
     schema = breadcrumb_schema([("", "Home"), ("contact.html", "Contact Us")])
     page = head("Contact RegenOrtho Palm Beach | Book a Consultation",
-                "Book a consultation at RegenOrtho Palm Beach — 11380 Prosperity Farms Road, Palm Beach Gardens. Call 833-STEM561 (833-783-6561) or request an appointment online.",
+                "Book a consultation at RegenOrtho Palm Beach — 11380 Prosperity Farms Road, Palm Beach Gardens. Call 833-STEM561 (833-783-6561) or book online.",
                 depth=d, canonical="contact.html", extra_schema=schema) + '<body class="page-contact">\n' + body
     write("contact.html", page)
 
@@ -2556,7 +2568,7 @@ def build_resources():
 {footer(d)}"""
     schema = faq_schema(faqs) + breadcrumb_schema([("", "Home"), ("patient-resources.html", "Patient Resources")])
     page = head("Patient Resources | RegenOrtho Palm Beach",
-                "Patient resources for RegenOrtho Palm Beach — first-visit guidance, insurance & payment options, appointment prep, post-treatment care, and a free foot & ankle guide.",
+                "Patient resources for RegenOrtho Palm Beach — first-visit guidance, insurance & payment options, post-treatment care, and a free foot & ankle guide.",
                 depth=d, canonical="patient-resources.html", extra_schema=schema) + '<body class="page-resources">\n' + body
     write("patient-resources.html", page)
 
@@ -2707,7 +2719,7 @@ def build_forms():
 </section>
 {cta_band(d, heading="Prefer to fill these out <em>with us?</em>", sub="Arrive fifteen minutes early and our front desk will walk you through everything on a practice tablet. Either way works.")}
 </main>
-{footer(d)}"""
+{footer(d, analytics=False)}"""
     hub = head("Patient Forms | RegenOrtho Palm Beach",
                "Complete RegenOrtho Palm Beach patient forms at home — the new patient intake and peptide & GLP-1 questionnaire, filled out privately in your browser.",
                depth=d, canonical="forms/index.html", extra_css="assets/css/forms.css",
@@ -2792,7 +2804,7 @@ def build_forms():
   </div>
 </section>
 </main>
-{footer(d, extra_js="assets/js/forms.js")}"""
+{footer(d, extra_js="assets/js/forms.js", analytics=False)}"""
         page = head(f["title"], f["desc"], depth=d, canonical=f"forms/{f['slug']}.html",
                     extra_css="assets/css/forms.css",
                     extra_schema=breadcrumb_schema([("", "Home"), ("forms/index.html", "Patient Forms"),

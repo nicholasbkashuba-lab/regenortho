@@ -163,6 +163,15 @@ CSS coastline scene stays underneath as the no-video fallback. asset_v() returns
 - Scrapers cache aggressively per-URL. After changing a card, re-check with Facebook's
   Sharing Debugger / a fresh URL rather than assuming it did not work.
 
+## Analytics
+- Vercel Web Analytics (cookieless, no consent banner) is emitted by `footer()` on every
+  page EXCEPT `/forms/*` — those three pages pass `analytics=False` per the HIPAA rule
+  below. Never widen the exclusion away or add any other tracker to form pages.
+- The tag 404s harmlessly until Web Analytics is switched on in the Vercel dashboard
+  (regenortho project → Analytics → Enable) — that toggle is the one manual step.
+- Homepage LCP: `head(preload_hero=True)` (homepage only) preloads the hero poster with
+  `fetchpriority=high`; the video itself stays `preload="none"` with JS-attached sources.
+
 ## Patient forms — HIPAA (do not regress)
 These two pages collect PHI, so they are built to keep it in the browser. `forms.js` has
 NO fetch/XHR/beacon/third-party SDK — Finish renders an on-page summary the patient prints,

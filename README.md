@@ -109,9 +109,11 @@ To deploy:
    `og:image` has to point at the live `*.vercel.app` host, because link-preview
    scrapers actually fetch that URL and fall back to a random page image if it 404s.
    `build.py` prints a reminder on every build while the two differ.
-5. Submit `sitemap.xml` in Google Search Console and update the Google Business Profile
+5. Enable Web Analytics on the Vercel project (Project → Analytics → Enable). The tag is
+   already on every page except `/forms/*`; it 404s silently until the toggle is flipped.
+6. Submit `sitemap.xml` in Google Search Console and update the Google Business Profile
    website link.
-6. Click the FormSubmit activation email on the first lead.
+7. Click the FormSubmit activation email on the first lead.
 
 To hand the whole thing to the practice, transfer this repo to their GitHub account and
 re-import it under their own Vercel account — nothing in the code needs to change.
